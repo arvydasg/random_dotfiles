@@ -20,7 +20,9 @@ git config --list (some info about you)
 
 git commit -a is enough when you are just editing one file... when you edit tens of files and you want to upload only 3 of them, then you do git add (those 3 files) and then do git commit, then only thoes 3 files will get commited I think. Adding is just putting those files into the STAGING AREA, and only those files will be actually comitted.
 
-git commit -a(all the changes, not necessary) -m "adding new files bla" (do this, to put the files into a magic box)
+git commit -a(all the changes, add them all and commit them. useful for 99% of the time) -m "adding new files bla" (do this, to put the files into a magic box)
+
+if you have new files you can not just commit -a, you need to add those files into the staging area  with "git add" first and then commit.
 
 git add . (. means all or choose specific files)
 
@@ -43,3 +45,27 @@ git remote add origin https://github.com/arvygasp/githhub.git
 git branch -M main
 git push -u origin main
 ~                                  
+
+
+
+STARTING A REPO ON A COMPUTER
+
+git init
+now you can do git add, git status and all
+but you can not push the changes, why?
+try to do git remote -v -- you get nothing
+it doesnt have a remote, you have to go to gihub and create an empty repo with NO readme.
+git remote add origin(rainbox, kakadu, bet ka, bet origin is convention, origin web server version of this repo) https://bla bla.... copy the url 
+now do git remote
+git remote -v
+git push origin master 
+great
+
+now try to go on github and make a change.
+go back to the computer and do git status
+should tell you that your dir is missing the changes.
+git pull origin master - to pull the changes you made on github back to your computer's dir
+
+
+
+
