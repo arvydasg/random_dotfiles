@@ -1,0 +1,56 @@
+install xampp
+
+sudo vim /etc/hosts
+add 127.0.0.1  gvelis.localhost
+
+
+
+
+
+sudo vim /opt/lampp/etc/extra/httpd-vhosts.conf
+
+delete all except comments, add this:
+
+<VirtualHost *:80>
+       DocumentRoot "/opt/lampp/htdocs/"
+       ServerName localhost
+</VirtualHost>
+
+<VirtualHost *:80>
+       DocumentRoot "/opt/lampp/gvelis/"
+       ServerName gvelis.localhost
+</VirtualHost>
+
+
+
+
+sudo vim /opt/lampp/etc/extra/httpd-xampp.conf
+
+add this </Directory> - inventing something, because I know I will get 403 permission denied if I dont do this
+
+
+# since XAMPP 1.4.3
+<Directory "/opt/lampp/gvelis">
+    AllowOverride AuthConfig Limit
+    Require all granted
+    ErrorDocument 403 /error/XAMPP_FORBIDDEN.html.var
+</Directory>
+
+also add - Require all granted to the thingy above, you know where.
+
+
+
+
+
+
+sudo vim /opt/lampp/etc/httpd.conf
+
+find this line
+# Virtual hosts
+# Include etc/extra/httpd-vhosts.conf - remove the comment from this line
+save exit
+
+
+restart the server
+
+enter gvelis.localhost in the browser - should work.
