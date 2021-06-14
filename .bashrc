@@ -2,6 +2,12 @@
 # ~/.bashrc
 #
 
+##################################################
+# BE SUPER CAREFUL, DONT USE THIS BASHRC BETWEEN DIFFERENT DISTROS!!!!!! DO diff1 diff2 to see the changes!!!
+##########################################
+
+
+
 [[ $- != *i* ]] && return
 
 colors() {
