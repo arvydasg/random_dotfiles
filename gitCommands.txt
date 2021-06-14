@@ -9,7 +9,7 @@ great video on GIT - https://www.youtube.com/watch?v=USjZcfj8yxE
 great video on GITHUB - https://www.youtube.com/watch?v=nhNq2kIvi9s
 
 
-git init
+git init (turning a repository into a git repository. good for starting from computer not from web)
 
 git remote add origin https://github.com/arvygasp/githhub.git
 git remote -v (shows all the origins)
@@ -18,10 +18,13 @@ git remote -v (shows all the origins)
 git status (see the files)
 git config --list (some info about you)
 
-git add . (or specific files)
+git commit -a is enough when you are just editing one file... when you edit tens of files and you want to upload only 3 of them, then you do git add (those 3 files) and then do git commit, then only thoes 3 files will get commited I think. Adding is just putting those files into the STAGING AREA, and only those files will be actually comitted.
+
+git commit -a(all the changes, not necessary) -m "adding new files bla" (do this, to put the files into a magic box)
+
+git add . (. means all or choose specific files)
 
 git status (check the files)
-git commit -a(all the changes, not necessary) -m "adding new files bla" (do this, to put the files into a magic box)
 
 git log - (see the commits you made (can go back and forth between commits here like the guy in the video))
 git branch - (check whihc branch you are on) 
