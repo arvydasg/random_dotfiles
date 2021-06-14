@@ -1,0 +1,186 @@
+first of  all - choose non free drivers, cuz of nividia drivers that I have. hope it will solve the problem with the dwm and random screen freezes + tags not working...
+
+IMMEADITELY AFTER INSTALL
+
+
+htop check - 650M/7.60G 73tasks 143thr
+sensors check 54
+
+firewall - on
+
+go to updates - update everything that is there (matcha gtk theme this time.. ikd)
+
+3 dots in the same window -> preferences
+
+official repositories -> refresh mirrors list (3-10mins)
+
+AUR -> enable aur support, keep build packages in cache, check for updates
+
+manjaro settings manager -> hardware configuration to see the drivers. graphic drivers preferably shoul be alright. google idk.. this time wont do anything.
+
+
+INSTALLING TIMESHIFT
+
+install timeshift through the package downloader gui
+go through the wizard, make sure to set the location of the timeshifts to the home folder
+
+maybe set daily 1?
+
+root - include all fles
+home - include hidden files only
+
+make one timeshift copy BEFORE installing all the other apps and changes.
+
+INSTALLING PACKAGES
+
+sudo pacman -Syu ----  System Update
+
+install anki throught the shop - terminal version is too big lol.
+sudo pacman -S vim
+sudo pacman -S brave
+
+get DWM, follow this tutorial -
+ https://www.youtube.com/watch?v=dP8OKP-r1tw
+
+getting it
+sudo pacman -S git base-devel
+git clone https://git.suckless.org/dwm
+git clone https://git.suckless.org/st
+sudo pacman -S dmenu
+
+installing/making it
+cd dwm
+sudo make clean install
+cd st
+sudo make clean install
+
+now dmenu is installed, st and dwm as well.
+now you might think you just log out and it is there, but the computer doest know it has it
+it doesnt know how to run it.
+
+try typing dwm - you see it says another is running
+
+cd /usr/share/xsessions
+
+sudo vim DWM.desktop
+
+paste this in:
+
+[Desktop Entry]
+Encoding=UTF-8
+Name=DWM
+Comment=Dynamic Window Manager
+Exec=/usr/local/bin/dwm
+Icon=
+Type=Application
+
+
+logout, check the bottom right corner - choose dwm.
+
+
+make one more timeshift now.
+Installed - vim, dwm, st, git, anki, brave
+
+
+
+##################### CUZTOMIZING ########################
+
+vim plugins
+brave vimium
+st terminal (line, font, colors)
+
+install image viewer (through the shop, smalles one possible)
+
+
+print dwm commands
+print vim commands
+print linux commands
+print vimium commands
+
+
+##################### PRINTING  ########################
+
+
+install cups for printing. (through the shop)
+run ./install.sh from the drivers, hopefully also on github.
+https://wiki.manjaro.org/index.php/Printing
+follow first steps from that tutorial or just do:
+pamac install manjaro-printer (chose nothing)
+sudo gpasswd -a aze sys
+sudo systemctl enable --now cups.service
+and go to cups and do a test page
+it works!!
+
+try write in terminal:
+lp filename or
+lpr filename
+
+see if prints. if doest, then do this command
+lpstat -p -d
+if says there is no destination set, do this:
+Your printer should have a name of some sort -- say, InkJet or something similar -- defined in CUPS. In CUPS (http://localhost:631), click on Printers, then click on the name of the printer. Then click on Administration and finally, click on Set as Server Default. Exit CUPS.
+
+restart computer, do this command again, should be fine.
+
+fuck I made it work. now write lp filename and it prints!!! wow man. :)
+
+
+
+##################### WIFI  ########################
+
+type nmtui
+and choose connection
+
+
+
+################### DWM bg image ###################
+
+first lets create a patch for dwm that on every autostart will look for an image and set it up, later we will use the same autostart patch to make the status bar thingy.
+
+go to dwm folder, make this file:
+dwm-autostart-20161205-bb3bd6f.diff
+
+go to this link
+https://dwm.suckless.org/patches/autostart/
+then copy the patch code of the first file, named same like you just created and paste the contents into your file.
+good.
+
+now in dwm folder do sudo make clean uninstall
+then patch --merge -i dwm-autostar and tab to finish
+enter
+
+will write that it has been installed.
+then we make sudo make clean install again.
+
+now lets make a .dwm folder, in which dwm will look for autostart.sh file every time it is booted.
+
+mkdir .dwm
+vim autostart.sh
+write
+#! /bin/bash
+
+feh --bg-scale ~/pics/sunsetdunes.jpg
+:wq
+sudo chmod +x autostart.sh
+./autostart.sh
+and the background should be set.
+change the image to see the effect and the script working. so cool dude first bash script.
+
+
+################### DWM admin bar ###################
+
+https://www.youtube.com/watch?v=gz0rd7_8tf0
+this video.
+
+sudo pacman -S xorg
+xsetroot -name "hello" - puts hello into the bar.
+
+go to .dwm
+vim autostart.sh
+then add
+while true; do
+        xsetroot -name "$(date)
+        sleep 1s
+done
+
+set up aliases for terminal cd .. some cool things, just like the hobyist
