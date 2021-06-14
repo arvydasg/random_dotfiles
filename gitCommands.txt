@@ -1,35 +1,38 @@
 Run
 
-git config --global user.email "azegaspa@gmail..com"
-git config --global user.name "arvygasp"
+git config --global user.email "a**g***a@gmail..com"
+git config --global user.name "a******p"
 git config --list (check if its saved)
             
 
- great video on GIT - https://www.youtube.com/watch?v=USjZcfj8yxE 
- great video on GITHUB - https://www.youtube.com/watch?v=nhNq2kIvi9s
+great video on GIT - https://www.youtube.com/watch?v=USjZcfj8yxE 
+great video on GITHUB - https://www.youtube.com/watch?v=nhNq2kIvi9s
 
 
- git init
- git remote add origin https://github.com/arvygasp/githhub.git
+git init
+
+git remote add origin https://github.com/arvygasp/githhub.git
+git remote -v (shows all the origins)
 
 
- git status (see the files)
- git add . (or specific files)
+git status (see the files)
+git config --list (some info about you)
 
- git status (check the files)
- git commit -m "adding new files bla" (do this, to put the files into a magic box)
+git add . (or specific files)
 
- git log - see the commits you made (can go back and forth between commits here like the guy in the video)
- git branch - (check whihc branch you are on) 
- git log 
- git status (see what branch)
- git remote (see what remote you are on) 
- git remote -v (shows all the origins)
+git status (check the files)
+git commit -a(all the changes, not necessary) -m "adding new files bla" (do this, to put the files into a magic box)
 
- git push origin master
+git log - (see the commits you made (can go back and forth between commits here like the guy in the video))
+git branch - (check whihc branch you are on) 
+git log 
+git status (see what branch)
+git remote (see what remote you are on) 
 
- git status GOOD PRECAUTION to make sure nothing is left out 
- git pull origin master
+git push origin master
+
+git status (GOOD PRECAUTION to make sure nothing is left out) 
+git pull origin master
 
 
 
