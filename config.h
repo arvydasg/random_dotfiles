@@ -1,6 +1,6 @@
 /* See LICENSE file for copyright and license details. */
 
-/* dwm config file wiht minimal changes. colors + backgorund with scrot (scrot -b) */
+/* dwm config file with minimal changes. colors + backgorund with scrot (scrot -b) */
 
 /* appearance */
 static const unsigned int borderpx  = 2;        /* border pixel of windows */
