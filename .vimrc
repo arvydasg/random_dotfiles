@@ -81,5 +81,3 @@ let g:user_emmet_leader_key=','
 
 "basically doing this for the undo tree as the primagen video
 "actually for changing between buffers is also a good idea
-
-
