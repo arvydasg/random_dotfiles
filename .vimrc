@@ -24,13 +24,17 @@ syntax on
 " turn relative line numbers on
 set relativenumber
 
-" Theme customization
+" Theme customization - smth tmux related
 colorscheme one
 set background=dark
+set t_Co=256
 set termguicolors
 
 " Show status line always
 set laststatus=2
+
+" Line for 80 characters
+set colorcolumn=80
 " }}}
 
 " Add cursorline
@@ -50,6 +54,9 @@ set textwidth=0
 
 " Enable mouse features for normal mode only, to prevent paste from explosion
 set mouse=n
+
+" cmon
+set noerrorbells
 
 " For new lines automatically indent by current line indent
 set autoindent
@@ -175,13 +182,12 @@ set wildignore+=*.swp,*.bak,*.pyc,*.pyo,*.so,*~,*.zip,*.gz,*.tar
 set wildignore+=virtual/,.virtualenv/,upload/,uploads/,node_modules/
 " }}}
 
-" Omnicomplete plugin settings {{{
+
+" " Omnicomplete plugin settings {{{
 set complete+=kspell "ctrl+p in insert mode to check the word while typing. Otherwise it would be
 " annoying if every word autocompletes
 set completeopt=menuone,longest " :h completeopt
-set shortmess+=c " don't pass messages to |ins-completion-menu|
-" autocomplete with Tab key - would be nice, but removes the ctrl+p function in Insert mode
-" inoremap <expr> <Tab> pumvisible() ? "<C-y>" : "<Tab>"
+" set shortmess+=c " don't pass messages to |ins-completion-menu|
 " }}}
 
 " VIM Smooth Scroll plugin settings {{{
@@ -204,3 +210,5 @@ let @c = 'A</p>'
 let g:user_emmet_mode='n'      "only enable normal mode functions
 let g:user_emmet_leader_key=','
 " }}}
+
+" Copy yank buffer to system clipboard
