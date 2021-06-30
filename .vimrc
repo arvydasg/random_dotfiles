@@ -22,7 +22,7 @@ call plug#end()
 syntax on
 
 " turn relative line numbers on
-set relativenumber
+" set relativenumber
 
 " Theme customization - smth tmux related
 colorscheme one
