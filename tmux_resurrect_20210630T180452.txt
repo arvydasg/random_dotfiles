@@ -1,0 +1,43 @@
+pane	ABSTRACT	1	:to-do	1	:*	0	:/home/arvygasp/Documents/abstract	1	vim	:vim to-do.txt
+pane	ABSTRACT	2	:notes	0	:-	0	:/home/arvygasp/Documents/abstract	1	vim	:vim notes.txt
+pane	ABSTRACT	3	:workspace	0	:	0	:/home/arvygasp/Documents/abstract	1	bash	:
+pane	BLOG	1	:to-do	0	:	0	:/home/arvygasp/Documents/blog	1	bash	:
+pane	BLOG	2	:notes	0	:-	0	:/home/arvygasp/Documents/blog	1	bash	:
+pane	BLOG	3	:workspace	1	:*	0	:/home/arvygasp/Documents/blog	1	bash	:
+pane	GOOGLE_IT	1	:to-do	0	:-	0	:/home/arvygasp/Documents/google_IT	1	vim	:vim to-do.txt
+pane	GOOGLE_IT	2	:notes	1	:*	0	:/home/arvygasp/Documents/google_IT	1	vim	:vim notes.txt
+pane	GOOGLE_IT	3	:workspace	0	:	0	:/home/arvygasp/Documents/google_IT	1	bash	:
+pane	LIBRARY	1	:to-do	1	:*	0	:/home/arvygasp/Documents/library	1	vim	:vim to-do.txt
+pane	LIBRARY	2	:notes	0	:-	0	:/home/arvygasp/Documents/library/notes	1	bash	:
+pane	LIBRARY	3	:workspace	0	:	0	:/home/arvygasp/Documents/library	1	bash	:
+pane	LINUXSKILLUP	1	:to-do	0	:	0	:/home/arvygasp/Documents/linuxskillup	1	bash	:
+pane	LINUXSKILLUP	2	:notes	0	:-	0	:/home/arvygasp/Documents/linuxskillup	1	bash	:
+pane	LINUXSKILLUP	3	:workspace	1	:*	0	:/home/arvygasp/Documents/linuxskillup	1	bash	:
+pane	OBELSDUMAS	1	:to-do	1	:*	0	:/home/arvygasp/Documents/obelsdumas	1	vim	:vim to-to.txt
+pane	OBELSDUMAS	2	:notes	0	:-	0	:/home/arvygasp/Documents/obelsdumas	1	vim	:vim notes.txt
+pane	OBELSDUMAS	3	:workspace	0	:	0	:/home/arvygasp/Documents/obelsdumas	1	bash	:
+pane	STATISTICS	1	:to-do	1	:*	0	:/home/arvygasp/Documents/statistics	1	bash	:
+pane	STATISTICS	2	:notes	0	:	0	:/home/arvygasp/Documents/statistics	1	bash	:
+pane	STATISTICS	3	:workspace	0	:-	0	:/home/arvygasp/Documents/statistics	1	bash	:
+window	ABSTRACT	1	1	:*	be1e,203x54,0,0,1
+window	ABSTRACT	2	0	:-	be1f,203x54,0,0,2
+window	ABSTRACT	3	0	:	be20,203x54,0,0,3
+window	BLOG	1	0	:	be21,203x54,0,0,4
+window	BLOG	2	0	:-	be22,203x54,0,0,5
+window	BLOG	3	1	:*	be23,203x54,0,0,6
+window	GOOGLE_IT	1	0	:-	be24,203x54,0,0,7
+window	GOOGLE_IT	2	1	:*	be25,203x54,0,0,8
+window	GOOGLE_IT	3	0	:	be26,203x54,0,0,9
+window	LIBRARY	1	1	:*	5f3f,203x54,0,0,10
+window	LIBRARY	2	0	:-	5f40,203x54,0,0,11
+window	LIBRARY	3	0	:	5f41,203x54,0,0,12
+window	LINUXSKILLUP	1	0	:	5f42,203x54,0,0,13
+window	LINUXSKILLUP	2	0	:-	5f43,203x54,0,0,14
+window	LINUXSKILLUP	3	1	:*	5f44,203x54,0,0,15
+window	OBELSDUMAS	1	1	:*	5f45,203x54,0,0,16
+window	OBELSDUMAS	2	0	:-	5f46,203x54,0,0,17
+window	OBELSDUMAS	3	0	:	5f47,203x54,0,0,18
+window	STATISTICS	1	1	:*	5f48,203x54,0,0,19
+window	STATISTICS	2	0	:	df3f,203x54,0,0,20
+window	STATISTICS	3	0	:-	df40,203x54,0,0,21
+state	ABSTRACT	OBELSDUMAS
