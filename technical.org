@@ -1188,15 +1188,16 @@ paaiskina ka daryti jeigu agenda nesimato... https://emacs.stackexchange.com/que
     some more info about colors - https://stackoverflow.com/questions/7617458/terminal-emacs-colors-only-work-with-term-xterm-256color
 * Git
 ** Git user info
-git config --global user.name "arvydasg"
-git config --global user.email "azegaspa@gmail..com"
-git config --list (check if its saved)
-# dont get asked for the password again
-git config --global credential.helper cache
-# put a new credential
-git config --global --unset credential.helper cache
-# put this and write password once
-git config --global credential.helper store
+   git config --global user.name "arvydasg"
+   git config --global user.email "azegaspa@gmail..com"
+   # (check if its saved)
+   git config --list
+   # dont get asked for the password again
+   git config --global credential.helper cache
+   # put a new credential
+   git config --global --unset credential.helper cache
+   # put this and write password once
+   git config --global credential.helper store
 ** Linking an Existing Project to a Git Remote
 #+BEGIN_SRC shell
 git init
