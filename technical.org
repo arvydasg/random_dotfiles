@@ -1187,57 +1187,43 @@ paaiskina ka daryti jeigu agenda nesimato... https://emacs.stackexchange.com/que
 
     some more info about colors - https://stackoverflow.com/questions/7617458/terminal-emacs-colors-only-work-with-term-xterm-256color
 * Git
+** Git user info
+git config --global user.name "arvydasg"
+git config --global user.email "azegaspa@gmail..com"
+git config --list (check if its saved)
+# dont get asked for the password again
+git config --global credential.helper cache
+# put a new credential
+git config --global --unset credential.helper cache
+# put this and write password once
+git config --global credential.helper store
+** Linking an Existing Project to a Git Remote
+#+BEGIN_SRC shell
+git init
+git remote add origin git@github.com:username/repo.git
+#+END_SRC
+** Random git commands
+   git status (see the files)
+   git add . (or specific files)
 
-   Run
+   git status (check the files)
+   git commit -m "adding new files bla" (do this, to put the files into a magic box)
 
+   git log - see the commits you made (can go back and forth between commits here like the guy in the video)
+   git branch - (check whihc branch you are on)
+   git log
+   git status (see what branch)
+   git remote (see what remote you are on)
+   git remote -v (shows all the origins)
 
-   git config --global user.name "arvydasg"
-   git config --global user.email "azegaspa@gmail..com"
-   git config --list (check if its saved)
-   # dont get asked for the password again
-   git config --global credential.helper cache
-   # put a new credential
-   git config --global --unset credential.helper cache
+   git push origin master
 
-   password - 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
-
-   # put this and write password once
-   git config --global credential.helper store
-
-~/Dropbox/org $
-
-    great video on GIT - https://www.youtube.com/watch?v=USjZcfj8yxE
-    great video on GITHUB - https://www.youtube.com/watch?v=nhNq2kIvi9s
-
-
-    git init
-    git remote add origin https://githuab.com/arvygasp/githhub.git
-
-
-    git status (see the files)
-    git add . (or specific files)
-
-    git status (check the files)
-    git commit -m "adding new files bla" (do this, to put the files into a magic box)
-
-    git log - see the commits you made (can go back and forth between commits here like the guy in the video)
-    git branch - (check whihc branch you are on)
-    git log
-    git status (see what branch)
-    git remote (see what remote you are on)
-    git remote -v (shows all the origins)
-
-    git push origin master
-
-    git status GOOD PRECAUTION to make sure nothing is left out
-    git pull origin master
-
-
+   git status GOOD PRECAUTION to make sure nothing is left out
+   git pull origin master
 
    git remote add origin https://github.com/arvygasp/githhub.git
    git branch -M main
    git push -u origin main
-
 * Drivers
 
  can find drivers here, cool, didnt know before.
