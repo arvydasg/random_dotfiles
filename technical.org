@@ -1,0 +1,1627 @@
+#+ARCHIVE: ~/Dropbox/99.backups/archive/%s_datetree::datetree/
+* django
+** 01 - Setting up the environment/project
+*** One big step
+  #+BEGIN_SRC shell
+  mkdir gasparavicius
+  cd gasparavicius
+  sudo apt install pip
+  sudo apt install python3 venv
+  python3 -m venv venv
+  source venv/bin/activate
+  pip install django
+  django-admin startproject primary_app #(this will be just pointing at other apps)
+  cd primary_app
+  python manage.py runserver
+  #+END_SRC
+  you can also reorganize the files so you have one folder less.
+  manage.py one back and from the new folder all back
+** 02 - Creating an app
+*** urls/view/return something
+**** copy urls.py
+ #+BEGIN_SRC shell
+ cd <project>
+ python manage.py startapp main #(core of the website)
+ #+END_SRC
+ copy urls.py from primary_app to just created app
+ add this inside of project urls.py:
+ #+BEGIN_SRC python
+
+   from django.contrib import admin
+   from django.urls import path, include # dont forget to include "include"
+
+   urlpatterns = [
+       path('', include('main.urls')), # empty path, homepage.
+       path('admin/', admin.site.urls),
+   ]
+
+ #+END_SRC
+**** go to main.urls (app) and add this:
+ #+BEGIN_SRC python
+
+ from django.urls import path
+ from . import views             # from relative import views
+
+ app_name = "main"               # good to use, listen 14:07 https://www.youtube.com/watch?v=yD0_1DPmfKM&list=PLQVvvaa0QuDe9nqlirjacLkBYdgc2inh3
+
+ # all paths lead to this urls.py now
+ urlpatterns = [
+     path("", views.homepage, name="homepage"),
+ ]
+
+ #+END_SRC
+**** go to views.py and add this, just to render something out
+ #+BEGIN_SRC python
+
+ from django.shortcuts import render
+ from django.http import HttpResponse
+
+ # Create your views here.
+ def homepage(request):
+     return HttpResponse("wow this is an awesome tutorial")
+
+ #+END_SRC
+** 03 - Creating models
+*** Look at django model fields (educate youreslf)
+    django model fields - google
+    many to choose from, but probs wont use 90% of those.
+*** add model data (models.py)
+    go to  models.py - inside the "main" app
+    #+BEGIN_SRC python
+
+ from django.db import models
+
+ class Tutorial(models.Model):
+     tutorial_title = models.CharField(max_length=255)
+     tutorial_content = models.TextField()
+     tutorial_published = models.DateTimeField("date published")
+     slug = models.SlugField()
+     intro = models.TextField()
+     body = models.TextField()
+     date_added = models.DateTimeField(auto_now_add=True)
+
+     def __str__(self):
+         return self.tutorial_title
+
+     class Meta:
+         ordering = ['-date_added']
+
+ #+END_SRC
+
+    model will map to a database table.
+    We already have a database - db.sqlite3 file
+    later can change it in settings.py
+*** migration
+    - [X] settings.py (primary_app) -> installed apps -> 'main.apps.MainConfig'(add this) (    same as in apps.py (primary_app))
+    - [X] makemigrations (prapares the migration) = python manage.py makemigrations
+    - [X] actually migrate = python manage.py migrate
+    - [ ] check file 0001_initial.py (can delete this file and make new one after modifying models.py)
+*** some fun (python shell/sql)
+    # SQL thingy for fun
+    if you really want to see whats happening in another way, can write this:
+    python manage.py sqlmigrate main 0001 (id of the migration)
+
+    # python thingy for fun
+
+    python manage.py shell
+
+    #+BEGIN_SRC python
+    from main.models import Quotes
+    from django.utils import timezone
+
+    Quotes.objects.all()
+    new_quote = Quotes(quotes_tag="Alan Watts", quotes_content="There is just... this jazz…",
+    quotes_published=timezone.now())
+    new_tutorial.save()
+    Quotes.objects.all()            # BOOM, see the title
+    for t in Quotes.objects.all():  # smth doesnt work, nvm
+      print(t.quotes_content)
+
+    #+END_SRC
+*** creating admin user
+    then lets create an admin user
+    #+BEGIN_SRC shell
+    python manage.py createsuperuser
+    username
+    password
+    http://localhost:8000/admin
+    #+END_SRC
+*** registering our new model (admin.py)
+    lets register our model
+    open admin.py
+    #+BEGIN_SRC python
+ from django.contrib import admin
+ from .models import Quotes
+
+ # Register your models here.
+
+ admin.site.register(Quotes)
+ #+END_SRC
+
+    # CHANGE ORDER
+    Above thingy was enough, what we can do also is sort the order of the content
+    that we put it. For example, some can be defaults (if we have 100 of them or smth)
+    and some we can put in ourselves. So, lets add something like this, it can help
+    us sort the content the way we want.
+
+ #+BEGIN_SRC python
+ from django.contrib import admin
+ from .models import Quotes
+
+ # Register your models here.
+
+ class QuotesAdmin(admin.ModelAdmin):
+     fields = ["quotes_tag",
+               "quotes_published",
+               "quotes_content"]
+
+ admin.site.register(Quotes, QuotesAdmin)
+ #+END_SRC
+
+    # DIVIDERS FOR DATA TYPES
+    useful when you have hundreds of fields
+
+ #+BEGIN_SRC python
+ from django.contrib import admin
+ from .models import Quotes
+
+ # Register your models here.
+
+ class QuotesAdmin(admin.ModelAdmin):
+     fieldsets = [
+         ("Tag/date", {"fields": ["quotes_tag", "quotes_published"]}),
+         ("Content", {"fields":["quotes_content"]})
+     ]
+
+ admin.site.register(Quotes, QuotesAdmin)
+ #+END_SRC
+
+    # It would be nice, when addint a new piece of content, for the date to automa-
+    # tically to write itself. Let's do that
+
+ #+BEGIN_SRC python
+   # go to models.py from datetime import datetime
+   quotes_published = models.DateTimeField("date published", default=datetime.now())
+ #+END_SRC
+*** migrating new changes
+    # Lets migrate the changes
+ #+BEGIN_SRC shell
+ python manage.py makemigrations
+ python manage.py migrate
+ #+END_SRC
+    # Add an app for a buffed up editor
+    # overwrites basic model types. we will overwrite a text field, turn it into a text editor
+ #+BEGIN_SRC shell
+       pip install django-tinymce4-lite
+       # we want to call upon it, point url.s towards it and so on
+       INSTALLED_APPS = (
+       ...
+       'tinymce',
+       ...
+       )
+     # Then, somewhere in the settings.py also add:
+     TINYMCE_DEFAULT_CONFIG = {
+	 'height': 360,
+	 'width': 1120,
+	 'cleanup_on_startup': True,
+	 'custom_undo_redo_levels': 20,
+	 'selector': 'textarea',
+	 'theme': 'modern',
+	 'plugins': '''
+		 textcolor save link image media preview codesample contextmenu
+		 table code lists fullscreen  insertdatetime  nonbreaking
+		 contextmenu directionality searchreplace wordcount visualblocks
+		 visualchars code fullscreen autolink lists  charmap print  hr
+		 anchor pagebreak
+		 ''',
+	 'toolbar1': '''
+		 fullscreen preview bold italic underline | fontselect,
+		 fontsizeselect  | forecolor backcolor | alignleft alignright |
+		 aligncenter alignjustify | indent outdent | bullist numlist table |
+		 | link image media | codesample |
+		 ''',
+	 'toolbar2': '''
+		 visualblocks visualchars |
+		 charmap hr pagebreak nonbreaking anchor |  code |
+		 ''',
+	 'contextmenu': 'formats | link image',
+	 'menubar': True,
+	 'statusbar': True,
+	 }
+
+     # then we need to POINT our app towards tinymce, because our widgets are going to
+     # call upon tinymce to work
+     # go to urls.py in primary_app and add this
+
+     urlpatterns = [
+       ...
+       ...
+       path('tinymce/', include ('tinymce.urls')),
+   ]
+
+     # then go to admin.py and add
+     from tinymce.widgets import TinyMCE
+     from django.db import models
+
+
+ class QuotesAdmin(admin.ModelAdmin):
+     ...
+
+     formfield_overrides = {
+         models.TextField: {'widget': TinyMCE()}
+     }
+ #+END_SRC
+
+ BOOM, now can add code snippets and stuff like that
+** 04 - Creating templates
+*** modify views.py
+    should look like this now
+#+BEGIN_SRC python
+from django.shortcuts import render
+from django.http import HttpResponse
+from .models import Quotes
+
+# Create your views here.
+def homepage(request):
+    return render(request=request,
+                  template_name="main/home.html",
+                  context={"quotes": Quotes.objects.all})
+#+END_SRC
+*** adding folders
+    1.main/templates
+    2.main/templates/main
+    3.create file called home.html
+    4.inside of it add hello there
+    5.refresh page = gains
+*** some info (no template overlapping)
+    main/templates/main/home.html.... why so long path?
+    django looks for a dir called templates.
+    PROBLEM = a lot of apps can have main/header/footer etc in those other apps
+    way to overcome - add some new folders- *call this directory same as your app*
+
+    {{ variable }}
+
+    {% logic %}
+
+    {% for  %}
+    {% endfor %}
+
+*** render quotes to the screen
+#+BEGIN_SRC html
+{% for cit in citatos %} <!-- described in views.py -->
+     {{cit}}
+{% endfor %}
+#+END_SRC
+    seeing nice names of the posts/quotes
+    try to comment out this:
+
+    # def __str__(self):
+    #     return self.quotes_tag
+
+    and the nicesiness disappears. okay, makes sense. now page displays
+
+    Quotes object (1) Quotes object (2)
+    # make them form new line
+#+BEGIN_SRC html
+<p>{{cit}}</p>
+#+END_SRC
+    # even more fancy - showing date/content/tag/title
+#+BEGIN_SRC html
+<p>{{cit.quotes_tag}}</p>
+<p>{{cit.quotes_published}}</p>
+<p>{{cit.quotes_content}}</p>
+
+<br>
+<br>
+#+END_SRC
+
+    # the code snippet doesnt render nicely, we need to add smth like this
+    <p>{{cit.quotes_content|safe}}</p> = | safe (pipe and safe)
+
+    never let forum posts to be safe, someone could issue it and write in
+    some javascript or smth
+
+    # syntax highlighting still looks like shit. for that we need some css and js..
+    when we got tinymce - it already came with css, so we will use theirs
+
+#+BEGIN_SRC html
+  <!-- add at the top of home.html -->
+  <head>
+  {% load static %}
+  <link href="{%static 'tinymce/css/prism.css' %}" rel="stylesheet">
+  </head>
+
+  <!-- add this to the bottom of home.html -->
+  <script src="{% static 'tinymce/js/prism.js' %}"></script>
+#+END_SRC
+
+    adding new posts/qutes etc is now fine. looks like shit, but at least shows up
+
+*** mindblown (DB browser)
+    YES YES YES finally found a way to oepn a database file. cool, will
+    sniff all around it.
+
+    website https://sqlitebrowser.org/dl/
+    tutorial 17s - https://www.youtube.com/watch?v=1Iy87jyA3Xs
+    install - sudo apt instal sqlitebrowser
+    just open the db file and look around!!!!!!!!!!!
+    added a new entry to db.sqlite3 and it showed up in the browser... cool
+
+** 05 - Styling w/ CSS
+*** adding lines to home.html from materializecss.com
+#+BEGIN_SRC html
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+#+END_SRC
+  font clearly has already changed.
+*** making header/footer/ etc files. cool
+    EXTENDS INCLUDES
+
+    {% block content %}
+    {% endblock %}
+
+    {% extends "main/header.html"  %}
+
+    KEEP things clean, not continue repeating ourselves.
+*** Sass
+    download sass source code
+    download koala
+    install
+
+    problems lauching - do this
+    answer - https://askubuntu.com/questions/738338/why-koala-program-wont-open-on-ubuntu-gnome-15-10
+    solution https://zoomadmin.com/HowToInstall/UbuntuPackage/libgconf-2-4
+
+    bruh - without sass, you get 10k lines of css and 12k lines of js..
+    got to learn sass
+
+    size of the folders is the same + sass gives you everything separated,
+    buttons, side nav, headers and etc.. amazing
+
+
+
+
+** authentication
+The configuration is set up in the INSTALLED_APPS and MIDDLEWARE sections
+of the project file (locallibrary/locallibrary/settings.py)
+
+Django provides an authentication and authorization ("permission") system,
+built on top of the session framework discussed in the previous tutorial, that
+allows you to verify user credentials and define what actions each user is
+allowed to perform. The framework includes built-in models for Users and Groups
+(a generic way of applying permissions to more than one user at a time),
+permissions/flags that designate whether a user may perform a task, forms and
+views for logging in users, and view tools for restricting content.
+
+You already created your first user when we looked at the Django admin site
+in tutorial 4 (this was a superuser, created with the command python manage.py
+createsuperuser). Our superuser is already authenticated and has all permissions,
+so we'll need to create a test user to represent a normal site user. We'll be
+using the admin site to create our locallibrary groups and website logins, as
+it is one of the quickest ways to do so.
+
+LOLLLL
+
+Django provides almost everything you need to create authentication pages to
+handle login, log out, and password management "out of the box". This includes
+a URL mapper, views and forms, but it does not include the templates — we have
+to create our own
+** app vs project
+$ django-admin *startproject* personal_portfolio
+A project refers to the entire application and all its parts.
+
+$ python manage.py startapp hello_world
+An app refers to a submodule of the project. It's self-sufficient and not intertwined with the other apps in the project such that, in theory, you could pick it up and plop it down into another project without any modification. An app typically has its own models.py (which might actually be empty). You might think of it as a standalone python module. A simple project might only have one app.
+
+For your example, the project is the whole website. You might structure it so there is an app for articles, an app for ranking tables, and an app for fixtures and results. If they need to interact with each other, they do it through well-documented public classes and accessor methods.
+
+The main thing to keep in mind is this level of interdependence between the apps. In practice it's all one project, so there's no sense in going overboard, but keep in mind how co-dependent two apps are. If you find one app is solving two problems, split them into two apps. If you find two apps are so intertwined you could never reuse one without the other, combine them into a single app.
+** apps.py
+Once you’ve created the app, you need to install it in your project.  add the app to settings.py
+contains settings for the application configuration.
+
+there can be many apps inside one django project
+** forms
+An HTML Form is a group of one or more fields/widgets on a web page, which
+can be used to collect information from users for submission to a server. Forms
+are a flexible mechanism for collecting user input because there are suitable
+widgets for entering many different types of data, including text boxes,
+checkboxes, radio buttons, date pickers and so on. Forms are also a relatively
+secure way of sharing data with the server, as they allow us to send data in
+POST requests with cross-site request forgery protection.
+
+
+Working with forms can be complicated!
+- Developers need to write HTML for the form,
+- validate and properly sanitize entered data on the server (and possibly also
+  in the browser),
+- repost the form with error messages to inform users of any invalid fields,
+- handle the data when it has successfully been submitted,
+- and finally respond to the user in some way to indicate success.
+
+Django Forms take a lot of the work out of all these steps, by providing a
+framework that lets you define forms and their fields programmatically, and
+then use these objects to both generate the form HTML code and handle much of
+the validation and user interaction.
+
+<form action="/team_name_url/" method="post">
+    <label for="team_name">Enter name: </label>
+    <input id="team_name" type="text" name="name_field" value="Default name for team.">
+    <input type="submit" value="OK">
+</form>
+
+action: The resource/URL where data is to be sent for processing when the
+form is submitted. If this is not set (or set to an empty string), then the
+form will be submitted back to the current page URL.
+
+
+method: The HTTP method used to send the data: POST OR GET.
+- The POST method should always be used if the DATA IS GOING TO RESULT IN A
+CHANGE TO THE SERVER'S DATABASE because this can be made more resistant to
+cross-site forgery request attacks.
+- The GET method should only be used for forms that DON'T CHANGE USER DATA
+(E.G. A SEARCH FORM). It is recommended for when you want to be able to
+bookmark or share the URL.
+
+
+The role of the server is first to render the initial form state — either
+containing blank fields or pre-populated with initial values. After the user
+presses the submit button, the server will receive the form data with values
+from the web browser and must validate the information. If the form contains
+invalid data, the server should display the form again, this time with
+user-entered data in "valid" fields and messages to describe the problem for
+the invalid fields. Once the server gets a request with all valid form data,
+it can perform an appropriate action (e.g. saving the data, returning the
+result of a search, uploading a file, etc.) and then notify the user.
+
+As you can imagine, creating the HTML, validating the returned data,
+re-displaying the entered data with error reports if needed, and performing
+the desired operation on valid data can all take quite a lot of effort to
+"get right". Django makes this a lot easier, by taking away some of the heavy
+lifting and repetitive code!
+** django shell
+To create instances of our Project class, we’re going to have to use the Django shell. The Django shell is similar to the Python shell but allows you to access the database and create entries. To access the Django shell, we use another Django management command:
+#+BEGIN_SRC bash
+$ python manage.py shell
+#+END_SRC
+** index
+The first page we'll create is the index page (catalog/).
+
+The index page will include some static HTML, along with generated "counts"
+of different records in the database.
+
+To make this work we'll create a URL mapping, a view, and a template.
+** database
+   models.py - inside the app!
+
+   database model - python class we use to escribe the django what the content is.
+   blog post - title, slug, intro, body , timestamp
+
+** init
+empty file that instructs Python to treat this directory as a Python package.
+** managePy
+
+manage.py, which serves as your project management script.
+
+
+Use manage.py to create one or more applications.
+
+A website may consist of one or more sections. For example, main site, blog,
+wiki, downloads area, etc. Django encourages you to develop these components
+as separate applications, which could then be re-used in different projects
+if desired.
+
+
+locallibrary/         # Website folder
+    manage.py         # Script to run Django tools (created using django-admin)
+    locallibrary/     # Website/project folder (created using django-admin)
+    catalog/          # Application folder (created using manage.py)
+
+
+
+$ python3 manage.py startapp catalog
+The tool creates a new folder and populates it with files for the different
+parts of the application (e.g. views should be stored in views.py, models
+in models.py, tests in tests.py, administration site configuration in admin.py,
+application registration in apps.py) and contain some minimal boilerplate
+code for working with the associated objects.
+
+
+Project directory should now look like this:
+
+locallibrary/
+    manage.py
+    locallibrary/
+    catalog/
+        admin.py
+        apps.py
+        models.py
+        tests.py
+        views.py
+        __init__.py
+        migrations/
+** models.py
+contains a series of classes that Django’s ORM converts to database tables.
+
+When you’re using an ORM, the classes you build that represent database tables are referred to as models. In Django, they live in the models.py module *of each Django app.*
+
+In your projects app, you’ll only need one table to store the different projects you’ll display to the user. That means you’ll only need to create *one* model in models.py.
+
+Django models come with many built-in model field types. We’ve only used three in this model. CharField is used for short strings and specifies a maximum length.
+
+#+BEGIN_SRC python
+from django.db import models
+
+class Project(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    technology = models.CharField(max_length=20)
+    image = models.FilePathField(path="/img")
+#+END_SRC
+
+CharField is used for short strings and specifies a maximum length.
+TextField is similar to CharField but can be used for longer form text as it doesn’t have a maximum length limit.
+Finally, FilePathField also holds a string but must point to a file path name.
+
+every model will inherint from this base model
+
+INHERITANCE
+pvz : class Tutorial(*models.Model*):
+
+models.Model alaready has a lot of different attributes and things associated with it
+and we can say the little things we want to change, columns and stuff
+
+charfield() probably wont need 90% of them, pepple use the same ones all the time.
+
+** migrations
+A migrations folder, used to store "migrations" — FILES THAT ALLOW YOU
+TO AUTOMATICALLY UPDATE your database as you modify your models.
+
+https://www.youtube.com/watch?v=aOLrEkpGWDg - explais when to make
+
+Basically when you update your model, you want to tell the database that
+you added some new fields, so it an know that. Look at the video, pretty clear
+
+EVERY TIME we make changes to model we have to make these steps. migrate.
+
+#+BEGIN_SRC bash
+python3 manage.py makemigrations
+#+END_SRC
+
+A migration is a file containing a Migration class with rules that tell Django
+what changes need to be made to the database.
+
+#+BEGIN_SRC bash
+python manage.py makemigrations projects
+#+END_SRC
+
+When running both the makemigrations and migrate commands, we added projects to
+our command. This tells Django to only look at models and migrations in the
+projects app. Django comes with several models already created.
+
+If you run makemigrations and migrate without the projects flag, then all
+migrations for all the default models in your Django projects will be created
+and applied. This is not a problem, but for the purposes of this section, they
+are not needed.
+
+You should also see that a file called db.sqlite3 has been created in the root
+of your project. Now your database is set up and ready to go. You can now create
+rows in your table that are the various projects you want to show on your
+portfolio site.
+
+** sessions
+The configuration is set up in the INSTALLED_APPS and MIDDLEWARE sections
+of the project file (locallibrary/locallibrary/settings.py), as shown below:
+
+HOW TO USE SESSIONS
+https://docs.djangoproject.com/en/3.1/topics/http/sessions/
+
+While the content is dynamically generated from the database, every user will
+essentially have access to the same pages and types of information when they
+use the site.
+
+
+In a "real" library you may wish to provide individual users with a customized
+experience, based on their previous use of the site, preferences, etc. For
+example, you could hide warning messages that the user has previously
+acknowledged next time they visit the site, or store and respect their
+preferences (e.g. the number of search results that they want to be displayed
+on each page).
+
+
+The session framework lets you implement this sort of behavior, allowing
+you to store and retrieve arbitrary data on a per-site-visitor basis.
+
+
+Sessions are the mechanism used by Django (and most of the Internet) for
+keeping track of the "state" between the site and a particular browser.
+Sessions allow you to store arbitrary data per browser, and have this data
+AVAILABLE to the site whenever the browser connects. Individual data items
+associated with the session are then referenced by a "key", which is used
+both to store and retrieve the data.
+
+Django uses a COOKIE containing a special session id to identify each
+browser and its associated session with the site. The actual session data
+is stored in the site database by default (this is more secure than storing
+the data in a cookie, where they are more vulnerable to malicious users). You
+can configure Django to store the session data in other places (cache, files,
+"secure" cookies), but the default location is a good and relatively secure
+option.
+
+
+You can access the session attribute in the view from the request parameter
+(an HttpRequest passed in as the first argument to the view).
+
+
+The session attribute is a dictionary-like object that you can read and
+write as many times as you like in your view, modifying it as wished. You can do
+all the normal dictionary operations, including clearing all data, testing if
+a key is present, looping through data, etc. Most of the time though, you'll
+just use the standard "dictionary" API to get and set values.
+** settings
+contains all the website settings, including registering any applications
+we create, the location of our static files, database configuration details.
+
+this file is also used for configuring a number of other settings, but at this
+point, you probably only want to change the TIME_ZONE —  TIME_ZONE = 'Europe/London'
+
+SECRET_KEY. This is a secret key that is used as part of Django's website
+security strategy. If you're not protecting this code in development,
+you'll need to use a different code (perhaps read from an environment variable
+or file) when putting it into production.
+
+
+DEBUG. This enables debugging logs to be displayed on error, rather than HTTP
+status code responses. This should be set to False in production as debug
+information is useful for attackers, but for now we can keep it set to True.
+You can easily recognize template variables and template tags (functions) -
+variables are enclosed in double braces ({{ num_books }}), and tags are
+enclosed in single braces with percentage signs ({% extends "base_generic.html" %}).
+
+The important thing to note here is that variables are named with the keys
+that we pass into the context dictionary in the render() function of our view.
+Variables will be replaced with their associated values when the template is
+rendered.
+** urls
+
+Determine what information we want to display in our pages
+url mapper
+
+URL mappers forward the supported URLs (and any information encoded)
+into the appropriate view functions.
+
+results that the queries return will depend on the contents of the database
+
+The URL mapper will extract the encoded information and pass it to the view
+and the view will dynamically determine what information to get from the db
+By encoding the information in the URL we will use a single set of a url
+mapping, a view, and a template to handle all books
+
+
+defines the site URL-to-VIEW Mappings. While this could contain all the URL
+mapping code, it is more common to delegate some of the mappings to particular
+applications.
+
+
+The website is created with a URL mapper file (urls.py) in the PROJECT FOLDER.
+While you CAN use this file to manage all your URL mappings, IT IS MORE USUAL
+to defer mappings to the ASSOCIATED APPLICATION.
+** tests.py
+contains test classes.
+** templates
+Whenever you want create templates or import scripts that you intend to use in all your Django apps inside a project,
+you can add them to this project-level directory and extend them inside your app templates.
+exactly!! like I had one special view for hello_world APP, but then I said wait, I want to WRAP you around this
+big project template, which was in the project template file.
+project-level templates that can be shared by all the apps inside your Django project.
+** views
+A view is a function that processes an HTTP request, FETCHES the required data from the database,
+RENDERS the data in an HTML page using an HTML template, and then RETURNS the generated HTML in an
+HTTP response to display the page to the user.
+
+contains functions and classes that handle what data is displayed in the HTML templates.
+
+Views in Django are a collection of functions or classes inside the views.py file in your app directory. Each function or class handles the logic that gets processed each time a different URL is visited.
+** wsgi/asgi
+BOILERPLATE
+
+A Boilerplate is a convenient way to define components to be used by a project,
+so that new projects can be created quickly with the same tooling set up as
+soon as the project is created.
+
+A Boilerplate can be used to define any project-level components and processes
+that are to be RE-USED.
+
+For example, a Boilerplate can define how the Django templates are structured
+and make opinionated choices about what JavaScript frameworks and CSS tools are used.
+
+Think of “synchronous” as “in synch” and asynchronous as “out of synch.”
+
+WSGI.PY
+
+is used to help your Django application communicate with the webserver.
+You can treat this as boilerplate.
+(whereas WSGI provided a standard for synchronous apps only)
+
+ASGI.PY
+
+is a standard for Python asynchronous web apps and SERVERS To communicate
+with each other. ASGI is the asynchronous successor to WSGI and provides a
+standard for both asynchronous and synchronous Python apps . It is
+BACKWARD-COMPATIBLE with WSGI and supports multiple servers and application frameworks.
+
+
+
+
+
+gfgdfgdf
+** django source
+python3 -c "import django; print(django.__path__)"
+* Emacs
+  :LOGBOOK:
+  CLOCK: [2021-08-01 Sk 05:19]--[2021-08-01 Sk 15:46] => 10:27
+  CLOCK: [2021-07-31 Št 18:46]--[2021-07-31 Št 22:46] =>  4:00
+  - Note taken on [2021-07-31 Št 20:45] \\
+    for fuck sakes I am again in emacs whole evening... trying out helm mode,
+    looking for other small things, tweaking stuff, fixing stuff... man oh man
+    it is endless if I allow myself to.
+  - Note taken on [2021-07-31 Št 18:18] \\
+    found an autosave package
+
+    https://christiantietze.de/posts/2020/10/emacs-auto-saving-and-email-drafts/
+  - Note taken on [2021-07-31 Št 16:43] \\
+    found expand-region package. amazing. c-=
+  - Note taken on [2021-07-31 Št 15:26] \\
+    dude wtf. was trying to add date at every heading, so I know when I start
+    a project.
+
+    used this in .emacs
+
+    and got 5000-6000 lines printed in obelsdumas org file. It broke. I couldnt open it
+    had to open in vim and delete all the lines that were created, multiple in one second...
+
+    #+BEGIN_SRC emacs-lisp
+    (defun update-last-edited (beg end length)
+      (when
+          (and
+           (not (org-before-first-heading-p))
+           (org-get-heading))
+        (org-entry-put nil "LAST-EDITED" (format-time-string "[%Y-%m-%d %a
+    %H:%M:%S]"))))
+
+    (add-to-list 'after-change-functions 'update-last-edited)
+    #+END_SRC
+
+    I kind of forgot vims keybindings, thats scary.
+  - Note taken on [2021-07-30 Pn 18:32] \\
+    Org as a spreadsheet system: a short introduction
+
+    https://orgmode.org/worg/org-tutorials/org-spreadsheet-intro.html
+  - Note taken on [2021-07-30 Pn 16:59] \\
+    blemba zinok gal reikes gauti evil mode... su emacs bindings is just wayy slower
+    when you actually are doing repetitive work, not just messing around like I used
+    to
+  - Note taken on [2021-07-30 Pn 16:43] \\
+    pize isivaizduok.. praleidau apie valandzike su sita problema.
+
+    https://orgmode.org/manual/Updating-the-table.html
+
+    3.5.9 Updating the table
+
+    In order to recalculate a line of a table or the entire table, use the following commands:
+
+    C-c * (org-table-recalculate)
+
+    KOL issiaiskinau
+  - Note taken on [2021-07-30 Pn 16:23] \\
+    krc kas yra "local setup has been refreshed".
+
+    nebegaliu evaluate funkciju skaiciavimo lenteliu.. nei vienam kompe nei kitam
+
+    Nei senam faile nei naujam
+  - Note taken on [2021-07-30 Pn 15:16] \\
+    replace-string - very cool. make sure you are above the content
+
+    n mygtukas iseina is rikiuotes lol
+  - Note taken on [2021-07-30 Pn 14:39] \\
+    dude... table eddition in emacs.. using it as a spreadsheet.. amazing!!!
+
+    https://orgmode.org/worg/org-tutorials/org-spreadsheet-intro.html
+
+    https://www.youtube.com/watch?v=5vGGgfs0q3k
+
+    calculating the csv tables for obels dumas orders like crazyyy
+  - Note taken on [2021-07-30 Pn 13:58] \\
+    tables in images from csv files
+
+    C-c | (org-table-create-or-convert-from-region)
+  - Note taken on [2021-07-30 Pn 13:56] \\
+    SELECT RECTANGLE!! and delete. so useful with CSV tables now.
+
+    In Emacs-24.4, the rectangle commands are alo made available via rectangular
+    selection: hit C-x SPC and then move around to select a rectangle (it should
+    be highlighted visually), after which you can use the usual C-w to remove it.
+
+    https://www.gnu.org/software/emacs/manual/html_node/emacs/Rectangles.html#Rectangles
+  - Note taken on [2021-07-30 Pn 10:14] \\
+    Images in emacs
+    #+CAPTION: This is the caption for the next figure link (or table)
+    #+NAME:   fig:SED-HR4049
+    [[./img/a.jpg]]
+    [[file:/tmp/image.png]]
+    C-c C-x C-v (org-toggle-inline-images)
+  (setq org-image-actual-width nil) - to myinit to be able to resize images?
+    #+NAME: fig:figure name
+    #+CAPTION: figure name
+    #+ATTR_ORG: :width 500
+    #+ATTR_LATEX: :width 2.0in
+    #+ATTR_HTML: :width 500
+    #+ATTR_HTML: :alt cat/spider image :title Action! :align right
+    [[file:~/Dropbox/doviliukas/emacs-html/images/karstas.jpeg]]
+
+    #+NAME: fig:figure name
+    #+ATTR_ORG: :width 500
+    #+ATTR_LATEX: :width 2.0in
+    #+ATTR_HTML: :width 500
+    #+CAPTION: A black cat stalking a spider
+    #+ATTR_HTML: :alt cat/spider image :title Action!
+    [[file:~/Dropbox/doviliukas/emacs-html/images/karstas.jpeg][Pranesimas]]
+
+
+    wow, clickable image - [[http://www.gnu.org/software/emacs/][GNU Emacs]] - collapse this
+    look more on export section.
+
+  - Note taken on [2021-07-30 Pn 09:17] \\
+    maybe I should create 3 separate files for the 3 main projects now.
+    1 - Personal website
+    2 - Obelsdumas
+    3 - Emacs
+  - Note taken on [2021-07-30 Pn 08:55] \\
+    watching this video - efficient keybindings emacs
+    https://www.youtube.com/watch?v=Dq5UOt63Mms
+  CLOCK: [2021-07-30 Pn 08:54]--[2021-07-30 Pn 09:17] =>  0:23
+  - Note taken on [2021-07-28 Wed 09:31] \\
+    labai nice - habit tracking mode.
+  CLOCK: [2021-07-28 Wed 08:38]--[2021-07-28 Wed 09:31] =>  0:53
+  - Note taken on [2021-07-27 Tue 14:41] \\
+    https://www.youtube.com/watch?v=nUvdddKZQzs&t=625s sitas video buvo inspiration susidelioti viska i projektus. Time stamps, comments, etc
+  CLOCK: [2021-07-27 Tue 14:39]--[2021-07-27 Tue 14:40] =>  0:01
+  CLOCK: [2021-07-27 Tue 12:12]--[2021-07-27 Tue 14:30] =>  2:18
+  CLOCK: [2021-07-27 Tue 08:43]--[2021-07-27 Tue 12:32] =>  3:49 - emacs research helm, make clock.org, transfer etc
+  CLOCK: [2021-07-27 Tue 08:17]--[2021-07-27 Tue 08:25] =>  0:08 - emacs
+  CLOCK: [2021-07-26 Mon 10:30]--[2021-07-26 Mon 18:05] =>  7:35 - org mode GTD way (first time)
+  CLOCK: [2021-07-19 Pr 13:42]--[2021-07-19 Pr 15:22] =>  1:40 - emacs agenda view
+  CLOCK: [2021-07-19 Pr 12:25]--[2021-07-19 Pr 13:12] =>  0:47 - emacs time tracking solution
+  CLOCK: [2021-07-19 Pr 15:20]--[2021-07-19 Pr 16:24] =>  1:04 - emacs autocompletion for languages
+  CLOCK: [2021-07-18 Sk 17:58]--[2021-07-18 Sk 18:15] =>  0:17 - doing totally random stuff (org mode time stuff)
+  CLOCK: [2021-07-17 Št 07:09]--[2021-07-17 Št 08:18] =>  1:09 - Mess around emacs theme. finally choosing zenburn.
+  CLOCK: [2021-07-16 Pn 19:50]--[2021-07-16 Pn 22:10] =>  2:20 - emacs/lol... getting better at using vim bindings in emacs. closign buffers, opening shells, closing windows, splitting windows. tomorrow have to look into themes
+  CLOCK: [2021-07-16 Pn 16:32]--[2021-07-16 Pn 18:32] =>  2:00 - setting up emacs/cleaning google drive/ putting stuff to dropbox and to .org files
+  - Note taken on [2021-07-27 Tue 14:31] \\
+    gg pman. again with emacs most of the day.. Julyte might come namo
+    earlier soon and what have you been doing? emacs lol.
+
+          Can not hold myself from trying to configure it the way I want and the way
+          it looks meaningful and helpful for me.
+
+          created clock.org file where I will clock all my times in. Better than
+          having them merged in the same file with journals.
+
+          as of now, after 3 or so hours, I have deleted clock.org because I have
+          found this funcion that allows me to take and log notes together with timestamps
+          along the project. thats a good way for now I think.
+  - Note taken on [2021-07-27 Tue 12:42] \\
+    Every single time I find something useful and implement in emacs org mode -
+          ofc it takes time, then all of the suddent I find a video of Reiner Konig
+          and my world just flips around. He introduces me to some cool feature that
+          kind of make my previous work useless.
+
+          not sure if I should just watch all of his videos and then start configuring
+          my emacs or just keep going and do stuff by myself and other resources.
+  - Note taken on [2021-07-26 Mon 14:24] \\
+    wow silly me, made some many mistakes trying to make this thing work.
+          but now one thing for sure - I will have a separate file with all the journaling
+          stuff. easy to input in it - yes.
+
+          one file to put all the time-stamped stuff - easy to put in - yes.
+
+          one place to dump all my thoughts in - gtd.org. easy to put in - lets try,
+          give me a moment.
+
+          Ok, back. It works like a charm.
+
+          and one place called - someday/maybe, where I will dump stuff that I dont
+          want and need to see on a daily basis. this list of tasks will be cleaned weekly.
+
+          refile - change location of the item c-c c-w and choose a place
+          archive - nothing gets deleted c-c c-x c-a
+          use template - c-c c
+   - Note taken on [2021-07-26 Mon 17:15] \\
+    So its the end of this working day. Spend the whole time, since 10am at the library
+          mostly configuring emacs to suite my liking. GTD method with emacs is quite easy and
+          I am liking it. Not dependent on evernote or anything like that, can be sure that
+          my workflow will remain the same for ears when I finally finish the setup phase, which
+          I am getting to an end to.
+
+          Theme - solarized from today. Will try it out. Creator - buddhist dude w/e, probs kept
+          an eye on details. Also it doenst strain my eyes so why not.
+
+          Yes, separate files for everything, orgzly on my phone all synced up, reviews are scheduled,
+          now all I have to do is stick to my schedules and do the actual work.
+  :END:
+** .bashrc for caps
+   #+BEGIN_SRC bash
+   /usr/bin/setxkbmap -option "ctrl:swapcaps"
+   #+END_SRC
+** basic shortcuts
+   shift + left/right = cycle through TODO states
+   Shift + up/down = cycle through priority states
+   alt + up/down = move the to-do items up and down
+   alt + shift + right/left = promote/demote tasks
+
+   ctrl+s = search, then type a word - finds instantly
+
+   <s + tab = add some source code thingy. after the #+BEGIN_SRC add lenguage for
+   syntax highlighting (js for example)
+   guy here shows how to execute js code in emacs - https://youtu.be/TK2kGpCQMfk?t=2538
+
+#+BEGIN_SRC js
+ let students = {
+    jake: { fullName: 'Jake Smith' },
+    mindy: { fullName: 'Mindy Jefferson' },
+};
+
+ let studentArr = Object.values(students);
+
+ return studentArr;
+#+END_SRC
+** tags
+   C+c C+q = assing tag to heading
+** exporting
+   ctrl+c ctrl+e - export
+   can export to html and it looks beautiful H - to html and O - to open
+
+   https://orgmode.org/manual/JavaScript-support.html#JavaScript-support
+
+   https://orgmode.org/manual/CSS-support.html#CSS-support
+
+   https://orgmode.org/manual/External-Links.html
+
+** tables
+    https://orgmode.org/worg/org-tutorials/org-spreadsheet-intro.html
+    https://www.youtube.com/watch?v=5vGGgfs0q3k
+    https://www.gnu.org/software/emacs/manual/html_node/emacs/Rectangles.html#Rectangles
+** CSV
+   - [ ] copy data from the file
+   - [ ] paste into org file
+   - [ ] select the data
+   - [ ] click C-c | (org-table-create-or-convert-from-region)
+   - [ ] tuomet pasizymek ko nereikia su (select rectangle C-x SCP)
+   - [ ] turn on the reference visualization grid with C-c }
+   - [ ] C-c * (org-table-recalculate)
+   - [ ] C-u C-c * or Recompute the entire table, line by line.
+   - [ ] m-% remove <span> </span>
+   - [ ] shift+alt+right arrow - insert new column
+** Using Emacs 16 - undo tree
+   ctrl+x k then ctrl+x u = tells what ctrl x u command is. - undotree
+   q = to quit
+   d = open diff mode
+** General
+  c-s = search forward
+  c-r = search backwards
+  c-g = CANCEL
+  c-x k = kill buffer
+  c-space = select text
+  m-w = copy text
+  c-w = cut text
+  c-y = yank/paste text
+  c-k = delete rest of the line
+  c-/ = undo
+  c-/ = redo (press c-g first to reverse)
+  m-x load-file = yes
+  c-x c-e = evaluate-buffer
+  m-x customize-themes RET = change theme on the fly
+  M - % = query replace
+  M-x highlight-regexp - highlights word occurences in the buffer
+** Moving
+  c-n = next LINE
+  c-p = previous LINE
+  c-f = forward CHARACTER
+  m-f = forward WORD
+  c-b = backward CHARACTER
+  m-b = backward WORD
+  c-a = beginning of the line
+  m-a = beginning of the sentence
+  c-e = end of the line
+  m-e = end of the sentence
+  m-r = center/top/bottom (roll)
+  c-l = recenter the screen (lygiai)
+  m-< = top of the buffer
+  m-> = end of the buffer
+  c-v = page down
+  m-v = page up
+** Buffers
+  c-x c-s = save buffer (save-buffer)
+  c-x c-w = save(as) buffer (write-file)
+  c-x b = buffer list opa
+  c-x c-b = buffer list (ui)
+
+  m-x m-f = ibuffer opens, if you want to open more files, to type
+  into the prompt, write c-f again. then type *.el for example to
+  open all the elisp files in the current directory.
+  /m = change major mode (sorts your buffers accordingly for example(if many buffers)) TAB to list all the modes
+  g = updates buffer in dired or buffer mode
+  m = in buffer mode - mark buffers
+  m-h - mark paragraph
+  c-x h = mark buffer
+  c-x SPC = rectangle mode
+  u = in buffer mode - unmark buffers
+  q = in buffer mode = quit ibuffer
+  e/f/RET = in buffer mode - edit buffer
+  A = pin buffer mode - view buffers
+  S = in buffer mode - save buffers
+  D = in buffer mode - close buffers
+  V = in buffer mode - revert changes form marked buffers
+  SORT buffers!!!!
+  s a = in buffer mode = sort by alphabet
+  s f = in buffer mode = sort by filename
+  s s = in buffer mode = sort by size
+  s v = in bufer mode = sort by last viewing time
+
+** Windows
+  x - delete window
+  m - swap windows
+  M - move window
+  c - copy window
+  j - select buffer
+  n - select the previous window
+  u - select buffer in the other window
+  c - split window fairly, either vertically or horizontally
+  v - split window vertically
+  b - split window horizontally
+  o - maximize current window
+  ? - show these command bindings
+** Timestamps
+   c-u c-u c-u . = enter current date timestamp - this puts to agenda
+   c-c . = same
+   c-c ! = no agenda
+** Bookmarks
+   ‘bookmark-default-file’, which defaults to `~/.emacs.d/bookmarks`
+   ‘M-x bookmark-delete’ – delete a bookmark by name
+   c-x r m = set bookmark and give it a name (bookmark-set)
+   c-x r b = jump to a bookmark. TAB for the list
+   c-x r l = bookmark menu list.
+   n/p = next and previous entries
+   s = save current bookmark file
+   c-o = open bookmark in another buffer (horizontal)
+   r = rename bookmark at point
+   m = mark bookmark for displaying
+   v = display marked bookmark
+   d = flag bookmark for deletion
+   x = delete flagged bookmark
+   u = unmark marked or flagged bookmark
+** Macros
+   c-x ( - define macro - do a sequence
+   c-x ) - stop defining
+   c-x e - executes macro
+** Commenting
+   M-; Insert or realign comment on current line; if the region is active, comment or uncomment the region instead (comment-dwim).
+   C-x C-; Comment or uncomment the current line (comment-line). If the region is active, comment or uncomment the lines in the region instead.
+   C-u M-; Kill comment on current line (comment-kill).
+   C-x ; Set comment column (comment-set-column).
+** Archiving
+http://doc.endlessparentheses.com/Var/org-archive-location.html
+;#+ARCHIVE: filename.org::
+
+archive with - c-c c-x c-a
+archive subtree with - c-c c-x c-s
+
+search all subtrees under headline and see
+which one can be archived with:
+c-u c-c c-x c-s
+** agenda
+paaiskina ka daryti jeigu agenda nesimato... https://emacs.stackexchange.com/questions/39478/emacs-not-loading-org-agenda-files-on-startup
+** Ripgrep
+   c-h m - HELP
+   ret - select
+   e - convert to editable buffer
+   c-c - confirm modifications
+   c-c c-k - cancel modifications
+   g - go/refresh (savee modified buffers)
+   m - popup menu
+   l - list saved searches
+   julyte | Ryg - pipe means OR - good when searchig for two things
+   M-n M-p - history
+** Jumping in a buffer
+   2x c-SCP - make mark
+   M-s - jump to a word/letter
+   M-w - see the region
+   2x C-x - select the region
+** HELP
+   c-h m = MODE help (nzn kodel is mazosios neleidzia rasyt)
+   c-h K = type shortcuts
+   c-h i = info pages
+
+   M-x customize-variable = very nice for some special edits (agenda or logbook)
+   org-log-into-drawer
+** Register
+   C-x r SCP <any> = resgister a key
+   C-x r j <any> = jump to the key
+** Projectile
+   c-c p p - switch project
+   c-c p f - search within the project
+   c-c p s - search within the project (like ripgrep)
+   c-c p o - occur (nice to find occurances, like ripgrep almost?)
+** Dumb-jump
+   very nice to be able to jump to definition
+   "M-g o" . dumb-jump-go-other-window)
+   ("M-g j" . dumb-jump-go)
+   ("M-g x" . dumb-jump-go-prefer-external)
+   ("M-g z" . dumb-jump-go-prefer-external-other-window))
+* tmux
+*** tmux install
+    sudo apt install tmux
+*** tmux ressurect install
+    https://www.youtube.com/watch?v=sMbuGf2g7gc - Nick's video
+
+    install TPM first -
+    git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+*** tmux with emacs
+    krc... yra ka veikti su jais. ypac spalvas nustatant. panasias.
+    so far - neveikia c-x c-backspace to go to the myinit.org file. bet niekis.
+
+    Taip pat ir spalvos neveikia normaliai. ir pliusiukai neveikia. ir kas dar...
+    ir copy paste neveikia, kas biski sucks rimtai.
+
+    bet ilgainiuj issiaiskinisiu, dabar svarbiausia tureti tmux ir tmux sessions,
+    kad svariai dirbti.
+
+    o, lol, also mouse doesnt work hehe.
+
+    put this in .bashrc for the colors to fix. dont forget to source.
+
+    alias emacs="TERM=xterm-256color emacs -nw"
+
+    some more info about colors - https://stackoverflow.com/questions/7617458/terminal-emacs-colors-only-work-with-term-xterm-256color
+* Git
+
+   Run
+
+
+   git config --global user.name "arvydasg"
+   git config --global user.email "azegaspa@gmail..com"
+   git config --list (check if its saved)
+   # dont get asked for the password again
+   git config --global credential.helper cache
+   # put a new credential
+   git config --global --unset credential.helper cache
+
+   password - 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
+
+   # put this and write password once
+   git config --global credential.helper store
+
+~/Dropbox/org $
+
+    great video on GIT - https://www.youtube.com/watch?v=USjZcfj8yxE
+    great video on GITHUB - https://www.youtube.com/watch?v=nhNq2kIvi9s
+
+
+    git init
+    git remote add origin https://githuab.com/arvygasp/githhub.git
+
+
+    git status (see the files)
+    git add . (or specific files)
+
+    git status (check the files)
+    git commit -m "adding new files bla" (do this, to put the files into a magic box)
+
+    git log - see the commits you made (can go back and forth between commits here like the guy in the video)
+    git branch - (check whihc branch you are on)
+    git log
+    git status (see what branch)
+    git remote (see what remote you are on)
+    git remote -v (shows all the origins)
+
+    git push origin master
+
+    git status GOOD PRECAUTION to make sure nothing is left out
+    git pull origin master
+
+
+
+   git remote add origin https://github.com/arvygasp/githhub.git
+   git branch -M main
+   git push -u origin main
+
+* Drivers
+
+ can find drivers here, cool, didnt know before.
+ trying to fix kali bluetooth
+
+ cd /usr/lib/modules/3.15.3-1-ARCH/kernel/drivers/bluetooth/
+
+* Install notes for newbie
+
+ Mozilla choose dark theme - https://www.google.com/preferences?prev=https%3A%2F%2Fwww.google.com%2Fsearch%3Fchannel%3Dfs%26client%3Dubuntu%26q%3Dgmail.coom#languages
+
+ the way to check the internet at the beginning changed
+
+ sound stuff
+ sudo pacman -S alsa-utils
+ launch alsamixer terminal
+ master - sound up with arrows
+ amixer sset Master unmute
+
+
+ pulseaudio
+ cups
+ network manager
+ networks managet -navigation
+ i3
+ base
+ base-devel
+
+ sudo pacman -S Install xdg-user-dirs. (if there are no basic directories) - worked, directories appeared.
+ I really must ask - does evry arch user who installs a full kde not have the standard folders like Desktop; Downloads; Pictures; Movies; Pictures installed?
+ https://unix.stackexchange.com/questions/268720/who-is-creating-documents-video-pictures-etc-in-home-directory
+
+ nitrogen for desktop image
+ sudo pacman -S nitrogen then dmenu nitrogen, add dirrectory, choose file.
+ sudo pacman -R nitrogen to remove nitrogen
+ removing dependencies - yay -Yc
+
+
+ install git and yay - for brave browser, fuck paru
+ how to remove paru if accidently installed and what is paru in the first pplace, its just like a regular package isnstallesd by pacman
+ https://www.reddit.com/r/archlinux/comments/c657y3/remove_yayaur_helper/
+ do everything as it says and do ls-a often
+ https://cloudcone.com/docs/article/how-to-install-yay-helper-on-archlinux/
+
+
+ pacttree - sudo pacman -S pacman-contrib
+
+ display manager
+     you can choose not to have one, just update your .xinitrc file and add startx there.
+     smth like that. OR you can install lightdm
+
+     lightdm lightdm-gtk-greeter are both a must
+     sudo systemctl enable lightdm
+
+
+     how to remove things -
+
+     remove firefox/mozilla - https://www.reddit.com/r/archlinux/comments/ijwzd5/how_to_complete_uninstall_firefox_on_arch_linux/
+
+     https://bbs.archlinux.org/viewtopic.php?id=61980
+     ALSO - rm -r .mozilla (https://www.computerhope.com/issues/ch000798.htm)
+
+     remove not an empty directory - https://www.cyberciti.biz/faq/how-to-delete-a-non-empty-directory-in-linux-shell/
+     rm -rf dirname
+
+
+ image viewer - sxiv -https://www.youtube.com/watch?v=GYW9i_u5PYs
+
+
+
+     PARU - https://wiki.archlinux.org/index.php/AUR_helpers
+     https://brave.com/linux/
+     paru similar to yay but better? NF guy installed paru
+
+ what is AUR what is PARU and what is YAY - https://itsfoss.com/paru-aur-helper/
+
+     PARU usage - https://www.youtube.com/watch?v=w3j3tivcm50
+
+ video player - https://www.youtube.com/watch?v=92uo5OBOKfY
+
+     image viewer better? not in c, easier to change shit. feh - https://wiki.archlinux.org/index.php/Feh
+     #####sxiv - image viewer luke and others
+     mpv - video viewer (not swallowing windows? i3?)
+
+
+
+
+ i3 conf
+
+ mod+shift+r - reload i3
+ mod+shift+e - EXIt i3
+ command xprop to check what program class is
+ startx to come back
+  useful to follow - https://www.youtube.com/watch?v=lvLExb1SUzM
+  damn lots of info here by EF guy
+
+  ls -la - seeing who can edit the file and etc, changing the rights to edit files and so on. so cool
+
+
+
+     want a file manager like in ubuntu and windows?
+
+     look at this - https://www.youtube.com/watch?v=0MEm4pj5dpQ 1:38
+
+
+
+ COMPOSITOR
+
+ OK LOOK HERe
+ install picom
+ create vim file in .config/picom/picom.conf
+
+ and add this for transparency
+
+ 3:18
+ https://www.youtube.com/watch?v=aIIfuXCC1Eg
+
+ start picom on startx
+ https://www.reddit.com/r/archlinux/comments/ea2tih/how_do_i_start_picom_on_startx/
+
+
+ most important - https://wiki.archlinux.org/index.php/Picom
+ kill before launching new one. ffs.
+ https://github.com/yshui/picom/issues/266 - about kill
+ pkill picom && picom -b
+
+
+
+ https://youtu.be/3QA0TdnE4IU?t=1014 - st font size. - didnt work\\
+
+
+ Dual monitor - https://askubuntu.com/questions/925303/how-to-set-primary-monitor-and-relation-between-monitors-on-ubuntu-using-termina
+
+ Xrandr check what monitors you have and uses pretty much the same line as he did just with your own monitor names.
+
+ xrandr --output VGA1 --primary --right-of LVDS1
+
+* Manjaro install
+
+ first of  all - choose non free drivers, cuz of nividia drivers that I have. hope it will solve the problem with the dwm and random screen freezes + tags not working...
+
+ IMMEADITELY AFTER INSTALL
+
+
+ htop check - 650M/7.60G 73tasks 143thr
+ sensors check 54
+
+ firewall - on
+
+ go to updates - update everything that is there (matcha gtk theme this time.. ikd)
+
+ 3 dots in the same window -> preferences
+
+ official repositories -> refresh mirrors list (3-10mins)
+
+ AUR -> enable aur support, keep build packages in cache, check for updates
+
+ manjaro settings manager -> hardware configuration to see the drivers. graphic drivers preferably shoul be alright. google idk.. this time wont do anything.
+
+
+ INSTALLING TIMESHIFT
+
+ install timeshift through the package downloader gui
+ go through the wizard, make sure to set the location of the timeshifts to the home folder
+
+ maybe set daily 1?
+
+ root - include all fles
+ home - include hidden files only
+
+ make one timeshift copy BEFORE installing all the other apps and changes.
+
+ INSTALLING PACKAGES
+
+ sudo pacman -Syu ----  System Update
+
+ install anki throught the shop - terminal version is too big lol.
+ sudo pacman -S vim
+ sudo pacman -S brave
+
+ get DWM, follow this tutorial -
+  https://www.youtube.com/watch?v=dP8OKP-r1tw
+
+ getting it
+ sudo pacman -S git base-devel
+ git clone https://git.suckless.org/dwm
+ git clone https://git.suckless.org/st
+ sudo pacman -S dmenu
+
+ installing/making it
+ cd dwm
+ sudo make clean install
+ cd st
+ sudo make clean install
+
+ now dmenu is installed, st and dwm as well.
+ now you might think you just log out and it is there, but the computer doest know it has it
+ it doesnt know how to run it.
+
+ try typing dwm - you see it says another is running
+
+ cd /usr/share/xsessions
+
+ sudo vim DWM.desktop
+
+ paste this in:
+
+ [Desktop Entry]
+ Encoding=UTF-8
+ Name=DWM
+ Comment=Dynamic Window Manager
+ Exec=/usr/local/bin/dwm
+ Icon=
+ Type=Application
+
+
+ logout, check the bottom right corner - choose dwm.
+
+
+ make one more timeshift now.
+ Installed - vim, dwm, st, git, anki, brave
+
+
+
+ ##################### CUZTOMIZING ########################
+
+ vim plugins
+ brave vimium
+ st terminal (line, font, colors)
+
+ install image viewer (through the shop, smalles one possible)
+
+
+ print dwm commands
+ print vim commands
+ print linux commands
+ print vimium commands
+
+
+ ##################### PRINTING  ########################
+
+
+ install cups for printing. (through the shop)
+ run ./install.sh from the drivers, hopefully also on github.
+ https://wiki.manjaro.org/index.php/Printing
+ follow first steps from that tutorial or just do:
+ pamac install manjaro-printer (chose nothing)
+ sudo gpasswd -a aze sys
+ sudo systemctl enable --now cups.service
+ and go to cups and do a test page
+ it works!!
+
+ try write in terminal:
+ lp filename or
+ lpr filename
+
+ see if prints. if doest, then do this command
+ lpstat -p -d
+ if says there is no destination set, do this:
+ Your printer should have a name of some sort -- say, InkJet or something similar -- defined in CUPS. In CUPS (http://localhost:631), click on Printers, then click on the name of the printer. Then click on Administration and finally, click on Set as Server Default. Exit CUPS.
+
+ restart computer, do this command again, should be fine.
+
+ fuck I made it work. now write lp filename and it prints!!! wow man. :)
+
+
+
+ ##################### WIFI  ########################
+
+ type nmtui
+ and choose connection
+
+
+
+ ################### DWM bg image ###################
+
+ first lets create a patch for dwm that on every autostart will look for an image and set it up, later we will use the same autostart patch to make the status bar thingy.
+
+ go to dwm folder, make this file:
+ dwm-autostart-20161205-bb3bd6f.diff
+
+ go to this link
+ https://dwm.suckless.org/patches/autostart/
+ then copy the patch code of the first file, named same like you just created and paste the contents into your file.
+ good.
+
+ now in dwm folder do sudo make clean uninstall
+ then patch --merge -i dwm-autostar and tab to finish
+ enter
+
+ will write that it has been installed.
+ then we make sudo make clean install again.
+
+ now lets make a .dwm folder, in which dwm will look for autostart.sh file every time it is booted.
+
+ mkdir .dwm
+ vim autostart.sh
+ write
+ #! /bin/bash
+
+ feh --bg-scale ~/pics/sunsetdunes.jpg
+ :wq
+ sudo chmod +x autostart.sh
+ ./autostart.sh
+ and the background should be set.
+ change the image to see the effect and the script working. so cool dude first bash script.
+
+
+ ################### DWM admin bar ###################
+
+ https://www.youtube.com/watch?v=gz0rd7_8tf0
+ this video.
+
+ sudo pacman -S xorg
+ xsetroot -name "hello" - puts hello into the bar.
+
+ go to .dwm
+ vim autostart.sh
+ then add
+ while true; do
+	 xsetroot -name "$(date)
+	 sleep 1s
+ done
+
+
+
+
+
+ set up aliases for terminal cd .. some cool things, just like the hobyist
+
+* Rsync
+
+ To the server
+
+ rsync -uvrP --delete /home/arvydas/Documents/website root@arvygasp.xyz:/var/www/arvygasp/
+
+ From the server
+
+ rsync -uvrP --delete root@arvygasp.xyz:/var/www/arvygasp/ /home/arvydas/Documents/arvygasp/
+
+* UEFI or BIOS check script
+* Scripts
+
+ to run them, have to write:
+ sudo chmod+x <filename>
+ then to run
+ ./<filename>
+
+*** check if system is using UEFI or BIOS
+
+ #+BEGIN_SRC bash
+
+ #! /bin/bash
+ [ -d /sys/firmware/efi ] %% echo UEFI || echo BIOS
+
+ #+END_SRC
+
+*** automatically set backgorund image for DWM I assume
+
+ #+BEGIN_SRC
+
+ #! /bin/bash
+
+ feh --bg-scale ~/pics/sunsetdunes.jpg
+
+ while true; do
+
+	 xsetroot -name "$(acpi -t | awk '{print $4}') | $(date '+%Y-%m-%d %H:%M')"
+	 sleep 1m
+
+ done
+
+ #+END_SRC
+
+* Browsers
+*** Brave
+
+ remove brave browser
+ $ sudo apt remove brave-browser
+ then if you do sudo apt update - it will mess up a little, ask some keys. Do:
+ $ sudo apt remove brave-browser brave-keyring
+ $ sudo rm /etc/apt/sources.list.d/brave-browser-*.list
+
+* Alpine linux
+*** IDE setup
+
+    https://wiki.alpinelinux.org/wiki/Xfce_Setup
