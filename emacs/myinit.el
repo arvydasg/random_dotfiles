@@ -88,7 +88,7 @@
 (defun aga-find-aga nil
   "Find the myinit.org file."
   (interactive)
-  (find-file "~/Dropbox/7.technical/emacs/myinit.org")
+  (find-file "~/Dropbox/7.dotfiles/emacs/myinit.org")
   (delete-other-windows))
 
 ;; Easily unfill paragraphs - still dont know when its useful but lets keep it
@@ -130,10 +130,11 @@
 
 ;; (setq org-agenda-restore-windows-after-quit t)
 (setq org-agenda-skip-scheduled-if-done t)
+(global-set-key (kbd "C-c a") 'org-agenda)
 
 (setq org-startup-folded 'content)
 
-(add-to-list 'custom-theme-load-path "~/Dropbox/7.technical/emacs/themes/")
+(add-to-list 'custom-theme-load-path "~/Dropbox/7.dotfiles/emacs/themes/")
 
  (use-package doom-themes
       :ensure t)
@@ -152,16 +153,10 @@
 ;; (bookmark-bmenu-list)
 ;; (switch-to-buffer "*Bookmark List*")
 
-;;(setq org-agenda-custom-commands
-;;      '(("o" "At the office" tags-todo "@office"
-;;         ((org-agenda-overriding-header "Office")))))
-
 ;Default
 (setq default-directory "~/Dropbox/1.planai/")
 ;Backups
 (setq backup-directory-alist '(("." . "~/Dropbox/99.backups/MyEmacsBackups")))
-;(setq org-archive-location (concat "~/Dropbox/emacs/backups/archive/" (format-time-string "%Y-%m") ".org::"))
-(global-set-key (kbd "C-c a") 'org-agenda)
 
 ;;Activating ibuffer instead of list-buffer. Ale more powerfull
 (global-set-key (kbd "C-x C-b") 'ibuffer)

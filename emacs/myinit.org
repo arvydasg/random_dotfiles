@@ -128,7 +128,7 @@ Before even doing anything, in your .emacs.d/init.el file add all this info --
 (defun aga-find-aga nil
   "Find the myinit.org file."
   (interactive)
-  (find-file "~/Dropbox/7.technical/emacs/myinit.org")
+  (find-file "~/Dropbox/7.dotfiles/emacs/myinit.org")
   (delete-other-windows))
 
 ;; Easily unfill paragraphs - still dont know when its useful but lets keep it
@@ -182,7 +182,7 @@ Before even doing anything, in your .emacs.d/init.el file add all this info --
 #+END_SRC
 * Themes
 #+BEGIN_SRC emacs-lisp
-  (add-to-list 'custom-theme-load-path "~/Dropbox/7.technical/emacs/themes/")
+  (add-to-list 'custom-theme-load-path "~/Dropbox/7.dotfiles/emacs/themes/")
 
  (use-package doom-themes
       :ensure t)
