@@ -1,5 +1,8 @@
 #+ARCHIVE: ~/Dropbox/99.backups/archive/%s_datetree::datetree/
 * django
+
+[[https://docs.djangoproject.com/en/3.2/intro/whatsnext/][what to read next]]
+
 ** 01 - Setting up the environment/project
 *** One big step
   #+BEGIN_SRC shell
@@ -956,6 +959,35 @@ python3 -c "import django; print(django.__path__)"
    #+BEGIN_SRC bash
    /usr/bin/setxkbmap -option "ctrl:swapcaps"
    #+END_SRC
+** Latex exports
+   https://emacs.stackexchange.com/questions/41697/reducing-latex-header-clutter-at-the-top-of-my-org-files
+   https://www.youtube.com/watch?v=wIOxeoerSF0&list=PL9D4_kW3k2gqdflzqgeaeD97HDIVW-RJU&index=2
+   #+latex_header: \input{/home/azeubu/Dropbox/2.versliukas/niekuciai/MyTeXHeader.tex}
+   https://ivanhanigan.github.io/2013/11/a-sharp-looking-orgmode-latex-export-header/
+   https://studylibfr.com/doc/2625035/managing-python-code-with-utf-8-in-org
+   https://orgmode.org/manual/LaTeX-specific-export-settings.html#LaTeX-specific-export-settings
+   bunch of info - https://orgmode.org/worg/org-tutorials/org-latex-export.html
+#+BEGIN_SRC latex
+%% This is the file MyTeXHeader.tex
+\documentclass[12pt,a4paper]{report}
+\usepackege{indentfirst}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{lipsum}
+\usepackage{fancyhdr}
+\usepackage{float}
+\usepackage{sectsty}
+\pagestyle{fancy}
+\fancyhead{}
+\rhead{right}
+\chead{center}
+\lhead{left}
+\begin{document}
+\begin{center}
+a seminar report bla
+\end{center}
+\end{document}
+#+END_SRC
 ** basic shortcuts
    shift + left/right = cycle through TODO states
    Shift + up/down = cycle through priority states
@@ -1161,6 +1193,9 @@ paaiskina ka daryti jeigu agenda nesimato... https://emacs.stackexchange.com/que
    ("M-g j" . dumb-jump-go)
    ("M-g x" . dumb-jump-go-prefer-external)
    ("M-g z" . dumb-jump-go-prefer-external-other-window))
+** The clock table
+   https://orgmode.org/org.html#The-clock-table
+   https://www.miskatonic.org/2017/11/16/clocktableii/
 * tmux
 *** tmux install
     sudo apt install tmux
@@ -1612,3 +1647,54 @@ git remote add origin git@github.com:username/repo.git
 *** IDE setup
 
     https://wiki.alpinelinux.org/wiki/Xfce_Setup
+* Hugo
+** hugo video topics
+   wow this is amazing
+
+   {{< youtube RtAF8C5N0Yg >}}
+
+   so far i learned about:
+
+ - creating new site
+ - insalling themes
+ - creating content (hugo new a.md, dir, _index.md)
+ - front matter (author, date,etc)
+ - archetypes (manage front matter, add new types automatically)
+ - shortcodes (display content like yt)
+ - taxonomies (tags)
+ - layouts (of the theme)
+ - templates
+ - override homepage in layouts (single, list, homepage)
+ - override templates (same like dir)
+ - baseof.html tempalate - for all the pages in the website (block) (like django, like php.. etc)
+ - creating formatting variables (.title, .date, etc gohugo.io/variables. can create own)
+ - functions (truncate (cutting string off))
+ - conditionals (if/else/when etc. let computer make decisions for you) (ge, eq, lt, or etc)
+ - data, ranging through structures
+ - parrtial templates (header/footer/DICTIONARIES (in case you want to change smth in on place only))
+
+** install hugo latest version
+
+ download latest .deb extended version release from here:
+ https://github.com/gohugoio/hugo/releases
+
+ into .bashrc put this:
+ export PATH=$PATH:$HOME/usr/local/bin/
+
+ now do hugo version
+ vuolia - it recognizes and the version is proper!
+* Server stuff
+** registering email on serveriai.lt
+taip pat, ar reikia siek tiek laiko kol el pastas prades pilnai veikti? meginau
+is kito el pasto atsisiusti sau laiska, taciau dar jo negavau Gabrielė profile
+
+Ar galėtumėte patikslinti el. pašto adresą?
+
+info@arvydas.dev Gabrielė profile
+Matome, kad Jūsų domeno "arvydas.dev" DNS zonoje nėra MX įrašo, nurodančio, iš
+kurio serverio turi veikti el. paštas. Jums reikėtų pridėti tokį įrašą,
+nukreipiantį el. paštą į serverį "sicista.serveriai.lt". Šį įrašą galite pridėti
+prisijungę į klientų sistemą adresu: https://klientams.iv.lt/ . Pasirinkite
+reikiamą domeną "arvydas.dev" ir paspauskite žalią mygtuką "Redaguoti
+zoną". Jums reikia sukurti naują įrašą: Pavadinimas - @, Tipas - MX, Reikšmė -
+10 sicista.serveriai.lt. (gale būtinai turi būti padėtas taškas)
