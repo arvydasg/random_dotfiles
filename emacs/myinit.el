@@ -111,36 +111,25 @@
 
 (setq org-log-into-drawer "LOGBOOK")
 (setq org-directory "~/Dropbox/1.planai/")
-(setq org-hide-emphasis-markers t) ; Hide * and / in org tex.
+;; (setq org-hide-emphasis-markers t) ; Hide * and / in org tex.
 
-;; ok, opens all buffers on execution. But why not automatically
-  ;; (setq org-agenda-files '("~/Dropbox/1.planai"))
-  ;; (add-hook 'after-init-hook 'org-agenda-list) ;makes a startup with agenda view? no need
+;; ;; Ok this is quite sick, scans Dropbox and looks for org files to be used for agenda
+;; (load-library "find-lisp")
+;; (add-hook 'org-agenda-mode-hook (lambda ()
+;; (setq org-agenda-files
+;; (find-lisp-find-files "~/Dropbox" "\.org$"))
+;; ))
 
-;; Ok this is quite sick, scans Dropbox and looks for org files to be used for agenda
-(load-library "find-lisp")
-(add-hook 'org-agenda-mode-hook (lambda ()
-(setq org-agenda-files
-      (find-lisp-find-files "~/Dropbox" "\.org$"))
-))
+(setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "IN-PROGRESS(p)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
+(setq org-agenda-inhibit-startup t)
 
-  ;; interesting way to make ALL of the fiels of a directory apper in agenda
-  ;; sad that I have to re-evaluate it each and every time. want it automatically
-  ;; (load-library "find-lisp")
-  ;; (setq org-agenda-files (find-lisp-find-files "~/Dropbox" "\.org$"))
+(setq org-agenda-files (list
+"~/Dropbox/1.planai/inbox.org"
+"~/Dropbox/1.planai/someday.org"
+"~/Dropbox/1.planai/tickler.org"))
 
-
-
-  (setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "IN-PROGRESS(p)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
-    (setq org-agenda-inhibit-startup t)
-
-    ;; (setq org-agenda-files (list
-    ;; 		       "~/Dropbox/1.planai/inbox.org"
-    ;; 		       "~/Dropbox/1.planai/someday.org"
-    ;; 		       "~/Dropbox/1.planai/personal.org"))
-
-    ;; (setq org-agenda-restore-windows-after-quit t)
-    (setq org-agenda-skip-scheduled-if-done t)
+;; (setq org-agenda-restore-windows-after-quit t)
+(setq org-agenda-skip-scheduled-if-done t)
 
 (setq org-startup-folded 'content)
 
@@ -279,10 +268,10 @@ ivy-virtual-abbreviate 'full)
  			       (file+datetree "~/Dropbox/1.planai/diary.org" "Diary")
 			       "* %U %^{Title} %?")
                               ("p" "Planned" entry
-                               (file+headline "~/Dropbox/1.planai/personal.org" "Planned")
+                               (file+headline "~/Dropbox/1.planai/tickler.org" "Planned")
                                "* %i%? %^{SCHEDULED}p" :prepend t)
                               ("r" "Repeating" entry
-                               (file+headline "~/Dropbox/1.planai/personal.org" "Repeating")
+                               (file+headline "~/Dropbox/1.planai/tickler.org" "Repeating")
                                "* %i%? %^{SCHEDULED}p")))
 
 (use-package which-key

@@ -90,7 +90,6 @@ Before even doing anything, in your .emacs.d/init.el file add all this info --
   (setq-default fill-column 80)
   ;; smart tab behavior - indent or complete
   (setq tab-always-indent 'complete)
-
 #+END_SRC
 * Some minor modes
 #+BEGIN_SRC emacs-lisp
@@ -154,38 +153,28 @@ Before even doing anything, in your .emacs.d/init.el file add all this info --
 #+BEGIN_SRC emacs-lisp
   (setq org-log-into-drawer "LOGBOOK")
   (setq org-directory "~/Dropbox/1.planai/")
-  (setq org-hide-emphasis-markers t) ; Hide * and / in org tex.
+  ;; (setq org-hide-emphasis-markers t) ; Hide * and / in org tex.
 #+END_SRC
 ** Org agenda
 #+BEGIN_SRC emacs-lisp
-    ;; ok, opens all buffers on execution. But why not automatically
-    ;; (setq org-agenda-files '("~/Dropbox/1.planai"))
-    ;; (add-hook 'after-init-hook 'org-agenda-list) ;makes a startup with agenda view? no need
+  ;; ;; Ok this is quite sick, scans Dropbox and looks for org files to be used for agenda
+  ;; (load-library "find-lisp")
+  ;; (add-hook 'org-agenda-mode-hook (lambda ()
+  ;; (setq org-agenda-files
+  ;; (find-lisp-find-files "~/Dropbox" "\.org$"))
+  ;; ))
 
-  ;; Ok this is quite sick, scans Dropbox and looks for org files to be used for agenda
-  (load-library "find-lisp")
-  (add-hook 'org-agenda-mode-hook (lambda ()
-  (setq org-agenda-files
-	(find-lisp-find-files "~/Dropbox" "\.org$"))
-  ))
+  (setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "IN-PROGRESS(p)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
+  (setq org-agenda-inhibit-startup t)
 
-    ;; interesting way to make ALL of the fiels of a directory apper in agenda
-    ;; sad that I have to re-evaluate it each and every time. want it automatically
-    ;; (load-library "find-lisp")
-    ;; (setq org-agenda-files (find-lisp-find-files "~/Dropbox" "\.org$"))
+  (setq org-agenda-files (list
+  "~/Dropbox/1.planai/inbox.org"
+  "~/Dropbox/1.planai/someday.org"
+  "~/Dropbox/1.planai/tickler.org"))
 
-
-
-    (setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "IN-PROGRESS(p)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
-      (setq org-agenda-inhibit-startup t)
-
-      ;; (setq org-agenda-files (list
-      ;; 		       "~/Dropbox/1.planai/inbox.org"
-      ;; 		       "~/Dropbox/1.planai/someday.org"
-      ;; 		       "~/Dropbox/1.planai/personal.org"))
-
-      ;; (setq org-agenda-restore-windows-after-quit t)
-      (setq org-agenda-skip-scheduled-if-done t)
+  ;; (setq org-agenda-restore-windows-after-quit t)
+  (setq org-agenda-skip-scheduled-if-done t)
+  (global-set-key (kbd "C-c a") 'org-agenda)
 #+END_SRC
 ** Starptup
 #+BEGIN_SRC emacs-lisp
@@ -214,20 +203,12 @@ Before even doing anything, in your .emacs.d/init.el file add all this info --
 ;; (bookmark-bmenu-list)
 ;; (switch-to-buffer "*Bookmark List*")
 #+END_SRC
-* Tags
-#+BEGIN_SRC emacs-lisp
-;;(setq org-agenda-custom-commands
-;;      '(("o" "At the office" tags-todo "@office"
-;;         ((org-agenda-overriding-header "Office")))))
-#+END_SRC
 * Directories
 #+BEGIN_SRC emacs-lisp
 ;Default
 (setq default-directory "~/Dropbox/1.planai/")
 ;Backups
 (setq backup-directory-alist '(("." . "~/Dropbox/99.backups/MyEmacsBackups")))
-;(setq org-archive-location (concat "~/Dropbox/emacs/backups/archive/" (format-time-string "%Y-%m") ".org::"))
-(global-set-key (kbd "C-c a") 'org-agenda)
  #+END_SRC
 * Buffers
 #+BEGIN_SRC emacs-lisp
@@ -364,10 +345,10 @@ m-x customise-variable RET org-log-into-drawer - select LOGBOOK save and apply.
  			       (file+datetree "~/Dropbox/1.planai/diary.org" "Diary")
 			       "* %U %^{Title} %?")
                               ("p" "Planned" entry
-                               (file+headline "~/Dropbox/1.planai/personal.org" "Planned")
+                               (file+headline "~/Dropbox/1.planai/tickler.org" "Planned")
                                "* %i%? %^{SCHEDULED}p" :prepend t)
                               ("r" "Repeating" entry
-                               (file+headline "~/Dropbox/1.planai/personal.org" "Repeating")
+                               (file+headline "~/Dropbox/1.planai/tickler.org" "Repeating")
                                "* %i%? %^{SCHEDULED}p")))
 #+END_SRC
 
