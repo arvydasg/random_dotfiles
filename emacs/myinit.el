@@ -19,8 +19,8 @@
   ;; Below makes it so that the dired buffer auto-updates.
   (setq dired-auto-revert-buffer t)
   ;; marking 80 characters in this way
-  ;; (setq-default header-line-format
-  ;; 		(list " " (make-string 79 ?-) "|"))
+  (setq-default header-line-format
+		(list " " (make-string 80 ?-) "|"))
   ;; hide src blocks by default
   (add-hook 'org-mode-hook 'org-hide-block-all)
   (setq org-log-note-clock-out t)
@@ -113,39 +113,69 @@
 (setq org-directory "~/Dropbox/1.planai/")
 ;; (setq org-hide-emphasis-markers t) ; Hide * and / in org tex.
 
-;; ;; Ok this is quite sick, scans Dropbox and looks for org files to be used for agenda
-;; (load-library "find-lisp")
-;; (add-hook 'org-agenda-mode-hook (lambda ()
-;; (setq org-agenda-files
-;; (find-lisp-find-files "~/Dropbox" "\.org$"))
-;; ))
+;; Ok this is quite sick, scans Dropbox and looks for org files to be used for agenda
+  ;; (load-library "find-lisp")
+  ;; (add-hook 'org-agenda-mode-hook (lambda ()
+  ;; (setq org-agenda-files
+  ;; (find-lisp-find-files "~/Dropbox" "\.org$"))
+  ;; ))
 
-(setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "IN-PROGRESS(p)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
-(setq org-agenda-inhibit-startup t)
+  (setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "IN-PROGRESS(p)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
 
-(setq org-agenda-files (list
-"~/Dropbox/1.planai/inbox.org"
-"~/Dropbox/1.planai/someday.org"
-"~/Dropbox/1.planai/tickler.org"))
+  ;; M-x org-agenda-file-list. Go there and save the changes to init.el
+  (setq org-agenda-files (list
+  "~/Dropbox/1.planai/inbox.org"
+  "~/Dropbox/1.planai/daily.org"
+  "~/Dropbox/1.planai/someday.org"
+  "~/Dropbox/1.planai/tickler.org"
+  "~/Dropbox/2.versliukas/README.org"
+  "~/Dropbox/3.client_websites/andlysport.com/andlysport.org"
+  "~/Dropbox/3.client_websites/estetineginekologija/estetineginekologija.org"
+  "~/Dropbox/3.client_websites/julija.consulting/julija.consulting.org"
+  "~/Dropbox/3.client_websites/obelsdumas/obelsdumas.org"
+  "~/Dropbox/4.personal_websites/arvydas.dev/arvydas.dev.org"
+  "~/Dropbox/4.personal_websites/django/citatos/README.org"
+  "~/Dropbox/4.personal_websites/quotes(su emacs)/quotes(su emacs).org"
+  "~/Dropbox/4.personal_websites/vasara2021/vasara2021.org"
+  "~/Dropbox/7.dotfiles/dotfiles.org"))
 
-;; (setq org-agenda-restore-windows-after-quit t)
-(setq org-agenda-skip-scheduled-if-done t)
-(global-set-key (kbd "C-c a") 'org-agenda)
+  ;; a way to archive files nicely into antother direction (put top file)
+  ;; #+ARCHIVE: ~/Dropbox/org/backups/archive/%s_datetree::datetree/
+;; maybe works to tell the location of the org archived files
+;; (setq org-archive-location (concat archive-dir (format-time-string "%Y" (current-time)) ".org_archive::datetree/"))
+
+  (setq org-archive-location "%s_archive::datetree")
+  (setq org-agenda-restore-windows-after-quit t)
+
+;; Cool a custom command for an agenda view
+;; (add-to-list 'org-agenda-custom-commands
+;; 	     '("W" "Weekly review"
+;; 	       agenda ""
+;; 	       ((org-agenda-start-day "-14d")
+;; 		(org-agenda-span 14)
+;; 		(org-agenda-start-on-weekday 1)
+;; 		(org-agenda-start-with-log-mode '(closed))
+;; 		(org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "^\\*\\* DONE ")))))
+
+  ;; (setq org-agenda-skip-scheduled-if-done t)
+  ;; Stop preparing agenda buffers on startup
+  (setq org-agenda-inhibit-startup t)
+  (global-set-key (kbd "C-c a") 'org-agenda)
 
 (setq org-startup-folded 'content)
 
 (add-to-list 'custom-theme-load-path "~/Dropbox/7.dotfiles/emacs/themes/")
 
- (use-package doom-themes
-      :ensure t)
+(use-package doom-themes
+     :ensure t)
 
-  (use-package doom-modeline
-  :ensure t
-  :hook (after-init . doom-modeline-mode))
+ (use-package doom-modeline
+ :ensure t
+ :hook (after-init . doom-modeline-mode))
 
-  ;; (load-theme 'default-black t)
-  ;; (load-theme 'zenburn t)
-(load-theme 'doom-gruvbox t)
+ ;; (load-theme 'default-black t)
+ ;; (load-theme 'zenburn t)
+ (load-theme 'doom-gruvbox t)
 
 ;; nereikia bookmarks - maiso siek tiek... kai per kelis langus dirbi ir nenori trukdytis
 ;; Set initial screen to bookmark list. must have inhibit startup screen that you see at the top
@@ -285,14 +315,14 @@ ivy-virtual-abbreviate 'full)
   (add-hook 'org-mode-hook 'org-bullets-mode)
   (setq org-bullets-bullet-list '("►" "▸" "•" "★" "◇" "◇" "◇" "◇")))
 
-(use-package whitespace
-  :init
-  (dolist (hook '(prog-mode-hook text-mode-hook))
-    (add-hook hook #'whitespace-mode))
-  (add-hook 'before-save-hook #'whitespace-cleanup)
-  :config
-  (setq whitespace-line-column 80) ;; limit line length
-  (setq whitespace-style '(face tabs empty trailing lines-tail)))
+;; (use-package whitespace
+;;   :init
+;;   (dolist (hook '(prog-mode-hook text-mode-hook))
+;;     (add-hook hook #'whitespace-mode))
+;;   (add-hook 'before-save-hook #'whitespace-cleanup)
+;;   :config
+;;   (setq whitespace-line-column 80) ;; limit line length
+;;   (setq whitespace-style '(face tabs empty trailing lines-tail)))
 
 (use-package org-habit
   :ensure nil
@@ -337,21 +367,21 @@ ivy-virtual-abbreviate 'full)
 :init
 (global-undo-tree-mode))		;
 
-(use-package centaur-tabs		;
-  :ensure t
-  :demand
-  :config
-  (setq centaur-tabs-set-bar 'over)
-  (setq centaur-tabs-set-icons t)
-  (setq centaur-tabs-gray-out-icons 'buffer)
-  (setq centaur-tabs-height 24)
-  (setq centaur-tabs-set-modified-marker t)
-  (setq centaur-tabs-modified-marker "•")
-  (setq centaur-tabs-adjust-buffer-order t)
-  (centaur-tabs-mode t)
-  :bind
-  ("C-<prior>" . centaur-tabs-backward)
-  ("C-<next>" . centaur-tabs-forward))	;
+;; (use-package centaur-tabs		;
+;;   :ensure t
+;;   :demand
+;;   :config
+;;   (setq centaur-tabs-set-bar 'over)
+;;   (setq centaur-tabs-set-icons t)
+;;   (setq centaur-tabs-gray-out-icons 'buffer)
+;;   (setq centaur-tabs-height 24)
+;;   (setq centaur-tabs-set-modified-marker t)
+;;   (setq centaur-tabs-modified-marker "•")
+;;   (setq centaur-tabs-adjust-buffer-order t)
+;;   (centaur-tabs-mode t)
+;;   :bind
+;;   ("C-<prior>" . centaur-tabs-backward)
+;;   ("C-<next>" . centaur-tabs-forward))	;
 
 (use-package projectile
   :ensure t
@@ -474,3 +504,5 @@ ivy-virtual-abbreviate 'full)
 
 (global-set-key (kbd "C-c v") 'ivy-push-view)
 (global-set-key (kbd "C-c V") 'ivy-pop-view) ;
+
+

@@ -1,4 +1,3 @@
-#+ARCHIVE: ~/Dropbox/99.backups/archive/%s_datetree::datetree/
 * django
 
 [[https://docs.djangoproject.com/en/3.2/intro/whatsnext/][what to read next]]
@@ -987,6 +986,40 @@ python3 -c "import django; print(django.__path__)"
 a seminar report bla
 \end{center}
 \end{document}
+#+END_SRC
+# idejos kitiem failam
+#+BEGIN_SRC emacs-lisp
+  ;; nice title page from here
+  ;; https://www.overleaf.com/learn/latex/How_to_Write_a_Thesis_in_LaTeX_(Part_5):_Customising_Your_Title_Page_and_Abstract
+  \begin{titlepage}
+     \begin{center}
+	 \vspace*{1cm}
+
+	 \textbf{Thesis Title}
+
+	 \vspace{0.5cm}
+	  Thesis Subtitle
+
+	 \vspace{1.5cm}
+
+	 \textbf{Author Name}
+
+	 \vfill
+
+	 A thesis presented for the degree of\\
+	 Doctor of Philosophy
+
+	 \vspace{0.8cm}
+
+	 \includegraphics[width=0.4\textwidth]{university}
+
+	 Department Name\\
+	 University Name\\
+	 Country\\
+	 Date
+
+     \end{center}
+  \end{titlepage}
 #+END_SRC
 ** basic shortcuts
    shift + left/right = cycle through TODO states
