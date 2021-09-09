@@ -1,4 +1,18 @@
-(unless (package-installed-p 'use-package)
+;; #+STARTUP: inlineimages latexpreview hideblocks entitiespretty overview
+;; startup & default view
+(setq org-startup-folded t  ; t, 'overview, 'content, 'showall.
+      org-startup-indented t	   ;this is amazing, no need to care about pressing TAB (when diary f.x.) "Org Indent Mode"
+      org-startup-truncated t
+      org-startup-with-inline-images t
+      org-startup-with-latex-preview t
+      ;; org-startup-options
+      ;; coordinate grid overlays
+      ;; org-table-overlay-coordinates t
+      ;; org-table-coordinate-overlays t
+      )
+
+(setq org-columns-default-format "%60ITEM(Task) %TODO %6Effort(Estim){:}  %6CLOCKSUM(Clock) %TAGS")
+ (unless (package-installed-p 'use-package)
  (package-install 'use-package))
   ;; Who I am
   (setq user-full-name "Arvydas Gasparavicius")
@@ -24,6 +38,16 @@
   ;; hide src blocks by default
   (add-hook 'org-mode-hook 'org-hide-block-all)
   (setq org-log-note-clock-out t)
+  ;; Clock out when moving task to a done state
+  (setq org-clock-out-when-done t)
+  ;; Resume clocking task when emacs is restarted
+  (org-clock-persistence-insinuate)
+  ;; Save the running clock and all clock history when exiting Emacs, load it on startup
+  (setq org-clock-persist t)
+  ;; Resume clocking task on clock-in if the clock is open
+  (setq org-clock-in-resume t)
+  ;; Do not prompt to resume an active clock, just resume it
+  (setq org-clock-persist-query-resume nil)
   (setq org-clock-into-drawer "CLOCK")
   ;; quite nice, tells you when the task has been finished when you say DONE on it
   (setq org-log-done t)
@@ -55,10 +79,12 @@
 ;; smart tab behavior - indent or complete
 (setq tab-always-indent 'complete)
 
+;; scrolling by pixel lines
+(pixel-scroll-mode 1)
 ;; the blinking cursor is nothing, but an annoyance
 (blink-cursor-mode 0)
 (global-hl-line-mode 1)
-(global-display-line-numbers-mode)
+;; (global-display-line-numbers-mode)
 (tool-bar-mode 0)
 (menu-bar-mode 0)
 (winner-mode 1) ;; never loseqq the layout c-c left/right
@@ -114,55 +140,96 @@
 ;; (setq org-hide-emphasis-markers t) ; Hide * and / in org tex.
 
 ;; Ok this is quite sick, scans Dropbox and looks for org files to be used for agenda
-  ;; (load-library "find-lisp")
-  ;; (add-hook 'org-agenda-mode-hook (lambda ()
-  ;; (setq org-agenda-files
-  ;; (find-lisp-find-files "~/Dropbox" "\.org$"))
-  ;; ))
+    ;; (load-library "find-lisp")
+    ;; (add-hook 'org-agenda-mode-hook (lambda ()
+    ;; (setq org-agenda-files
+    ;; (find-lisp-find-files "~/Dropbox" "\.org$"))
+    ;; ))
 
-  (setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "IN-PROGRESS(p)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
+    (setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "SIANDIEN(s)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
+    ;; M-x org-agenda-file-list. Go there and save the changes to init.el
+    (setq org-agenda-files '("~/Dropbox/1.planai/"
+                             "~/Dropbox/2.arvydas.dev/"
+                             "~/Dropbox/3.client_websites/estetineginekologija"
+                             "~/Dropbox/3.client_websites/julija.consulting"
+                             "~/Dropbox/3.client_websites/obelsdumas"
+                             "~/Dropbox/3.client_websites/andlysport"
+                             "~/Dropbox/4.personal_websites/arvydas.dev.web"
+                             "~/Dropbox/4.personal_websites/vasara2021"
+                             "~/Dropbox/4.personal_websites/quotes(su emacs)"
+                             "~/Dropbox/4.personal_websites/django/citatos/"
+                             "~/Dropbox/7.dotfiles/"))
 
-  ;; M-x org-agenda-file-list. Go there and save the changes to init.el
-  (setq org-agenda-files (list
-  "~/Dropbox/1.planai/inbox.org"
-  "~/Dropbox/1.planai/daily.org"
-  "~/Dropbox/1.planai/someday.org"
-  "~/Dropbox/1.planai/tickler.org"
-  "~/Dropbox/2.versliukas/README.org"
-  "~/Dropbox/3.client_websites/andlysport.com/andlysport.org"
-  "~/Dropbox/3.client_websites/estetineginekologija/estetineginekologija.org"
-  "~/Dropbox/3.client_websites/julija.consulting/julija.consulting.org"
-  "~/Dropbox/3.client_websites/obelsdumas/obelsdumas.org"
-  "~/Dropbox/4.personal_websites/arvydas.dev/arvydas.dev.org"
-  "~/Dropbox/4.personal_websites/django/citatos/README.org"
-  "~/Dropbox/4.personal_websites/quotes(su emacs)/quotes(su emacs).org"
-  "~/Dropbox/4.personal_websites/vasara2021/vasara2021.org"
-  "~/Dropbox/7.dotfiles/dotfiles.org"))
 
-  ;; a way to archive files nicely into antother direction (put top file)
-  ;; #+ARCHIVE: ~/Dropbox/org/backups/archive/%s_datetree::datetree/
-;; maybe works to tell the location of the org archived files
-;; (setq org-archive-location (concat archive-dir (format-time-string "%Y" (current-time)) ".org_archive::datetree/"))
+  ;; amazing link explaining archive locations
+  ;; https://orgmode.org/worg/doc.html#org-archive-location
+    ;; #+ARCHIVE: ~/Dropbox/org/backups/archive/%s_datetree::datetree/
+    (setq org-archive-location "::datetree/")
+    (setq org-agenda-restore-windows-after-quit t)
 
-  (setq org-archive-location "%s_archive::datetree")
-  (setq org-agenda-restore-windows-after-quit t)
 
-;; Cool a custom command for an agenda view
-;; (add-to-list 'org-agenda-custom-commands
-;; 	     '("W" "Weekly review"
-;; 	       agenda ""
-;; 	       ((org-agenda-start-day "-14d")
-;; 		(org-agenda-span 14)
-;; 		(org-agenda-start-on-weekday 1)
-;; 		(org-agenda-start-with-log-mode '(closed))
-;; 		(org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "^\\*\\* DONE ")))))
+    ;;Cool a custom command for an agenda view
+  ;; (add-to-list 'org-agenda-custom-commands
+  ;;            '("W" "Weekly review"
+  ;;              agenda ""
+  ;;              ((org-agenda-start-day "-14d")
+  ;;               (org-agenda-span 14)
+  ;;               (org-agenda-start-on-weekday 1)
+  ;;               (org-agenda-start-with-log-mode '(closed))
+  ;;               (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "^\\*\\* DONE ")))))
 
-  ;; (setq org-agenda-skip-scheduled-if-done t)
-  ;; Stop preparing agenda buffers on startup
-  (setq org-agenda-inhibit-startup t)
-  (global-set-key (kbd "C-c a") 'org-agenda)
+    ;; (setq org-agenda-skip-scheduled-if-done t)
+    ;; Stop preparing agenda buffers on startup
+    (setq org-agenda-inhibit-startup t)
+    (global-set-key (kbd "C-c a") 'org-agenda)
+  ;; show aaaaaal the items in agenda, I wanna see all!!
 
-(setq org-startup-folded 'content)
+
+
+;; something random from here
+;; https://orgmode.org/list/5474B624.80002@online.de/T/
+;; (setq org-agenda-custom-commands
+      ;; (append
+      ;;  org-agenda-custom-commands
+      ;;  '(("z" "Clock Review"
+      ;;    ((agenda ""
+      ;;             (
+      ;;              (org-agenda-overriding-header "Clocking Review")
+      ;;              (org-agenda-archives-mode t)
+      ;;              (org-agenda-span 'day)
+      ;;              (org-agenda-show-log 'clockcheck)
+      ;;              (org-agenda-clockreport-mode t)))
+      ;;     )))))
+
+(setq org-agenda-log-mode 't)
+(setq org-agenda-custom-commands
+      '(("a" "My custom agenda"
+	 ((org-agenda-list nil nil 1)
+	  (todo "SIANDIEN")
+	  (todo "WAITING")
+	  (todo "NEXT")
+	  (todo "TODO")))))
+
+(add-to-list 'org-agenda-custom-commands
+	     '("l" "Siandienos lentele"
+	       agenda ""
+	       ((org-agenda-overriding-header "")
+		(org-agenda-span 1)
+		(org-agenda-use-time-grid nil)
+		(org-agenda-view-columns-initially t)
+		;; do not show wardings, overdue and overscheduled
+		(org-scheduled-past-days 0)
+		(org-deadline-past-days 0)
+		(org-deadline-warning-days 0)
+		;; skip finished entries
+		(org-agenda-skip-deadline-if-done t)
+		(org-agenda-skip-scheduled-if-done t))))
+
+;; #+BEGIN: clocktable :maxlevel 0 :scope file :step day :tstart "<-1w>" :tend "<now>" :compact t
+(setq org-columns-default-format "%60ITEM(Task) %5Effort(Estim){:} %5CLOCKSUM(Clock)")
+(setq org-global-properties '(("Effort_ALL". "0:05 0:10 0:30 1:00 2:00 3:00 4:00")))
+
+(setq org-startup-folded 'content)	;
 
 (add-to-list 'custom-theme-load-path "~/Dropbox/7.dotfiles/emacs/themes/")
 
@@ -192,7 +259,7 @@
 (global-set-key (kbd "C-x C-b") 'ibuffer)
 
 ;; sitas geriausias ir paprasciausias krc. veikia puikiai su ivy.
-(setq org-refile-targets '((org-agenda-files :maxlevel . 4)))
+(setq org-refile-targets '((org-agenda-files :maxlevel . 6)))
 
 ;; check https://github.com/bbatsov/super-save for more info
 (use-package super-save
@@ -288,7 +355,19 @@ ivy-virtual-abbreviate 'full)
 (define-key global-map "\C-cc" 'org-capture)
 (setq org-capture-templates '(("i" "Inbox" entry
                                (file+headline "~/Dropbox/1.planai/inbox.org" "Inbox")
-			       "*  %i%?")
+			       "* %i%?")
+                               ("s" "Seima" entry
+                               (file+headline "~/Dropbox/1.planai/seima.org" "Seima to-do")
+			       "* %i%?")
+                               ("a" "arvydas.dev" entry
+                               (file+headline "~/Dropbox/2.arvydas.dev/arvydas.dev.org" "arvydas.dev to-do")
+			       "* %i%?")
+                               ("o" "Obelsdumas" entry
+                               (file+headline "~/Dropbox/3.client_websites/obelsdumas/obelsdumas.org" "Obelsdumas to-do")
+			       "* %i%?")
+                               ("j" "Julija.consulting" entry
+                               (file+headline "~/Dropbox/3.client_websites/julija.consulting/julija.consulting.org" "Julija.consulting to-do")
+			       "* %i%?")
 			      ("d" "Diary" entry
  			       (file+datetree "~/Dropbox/1.planai/diary.org" "Diary")
 			       "* %U %^{Title} %?")
@@ -297,7 +376,7 @@ ivy-virtual-abbreviate 'full)
                                "* %i%? %^{SCHEDULED}p" :prepend t)
                               ("r" "Repeating" entry
                                (file+headline "~/Dropbox/1.planai/tickler.org" "Repeating")
-                               "* %i%? %^{SCHEDULED}p")))
+                               "* %i%? %^{SCHEDULED}p")))
 
 (use-package which-key
   :ensure t
@@ -328,6 +407,11 @@ ivy-virtual-abbreviate 'full)
   :ensure nil
   :config
   (setq org-habit-show-habits-only-for-today t))
+
+(require 'org-habit)
+(setq org-habit-graph-column 60)
+(setq org-habit-following-days 0)
+(setq org-habit-preceding-days 30)
 
 ;; ;; Initialize my `exec-path' and `load-path' with custom paths
 ;; (add-to-list 'exec-path "~/bin/")
@@ -441,8 +525,8 @@ ivy-virtual-abbreviate 'full)
   ;; (setq speedbar-use-images nil)
   (setq sr-speedbar-right-side nil)
   (setq speedbar-show-unknown-files t)
-  (setq speedbar-directory-unshown-regexp "^\(\.\.*$\)\'")
-)
+  (setq sr-speedbar-auto-refresh t)
+  (setq speedbar-directory-unshown-regexp "^\(\.\.*$\)\'"))
 
 ;; temporarily highlight changes from yanking, etc
 (use-package volatile-highlights
@@ -506,3 +590,17 @@ ivy-virtual-abbreviate 'full)
 (global-set-key (kbd "C-c V") 'ivy-pop-view) ;
 
 
+
+
+
+;;; Stefan Monnier <foo at acm.org>. It is the opposite of fill-paragraph    
+    (defun unfill-paragraph (&optional region)
+      "Takes a multi-line paragraph and makes it into a single line of text."
+      (interactive (progn (barf-if-buffer-read-only) '(t)))
+      (let ((fill-column (point-max))
+            ;; This would override `fill-column' if it's an integer.
+            (emacs-lisp-docstring-fill-column t))
+        (fill-paragraph nil region)))
+
+ ;; Handy key definition
+    (define-key global-map "\M-Q" 'unfill-paragraph)

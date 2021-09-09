@@ -954,6 +954,9 @@ python3 -c "import django; print(django.__path__)"
           Yes, separate files for everything, orgzly on my phone all synced up, reviews are scheduled,
           now all I have to do is stick to my schedules and do the actual work.
   :END:
+** Emacs to-do
+*** DONE DAVAI DAVAI continue removing archive files + add config 
+    CLOSED: [2021-09-08 Tr 09:40] SCHEDULED: <2021-09-08 Tr>
 ** .bashrc for caps
    #+BEGIN_SRC bash
    /usr/bin/setxkbmap -option "ctrl:swapcaps"
@@ -1021,6 +1024,56 @@ a seminar report bla
      \end{center}
   \end{titlepage}
 #+END_SRC
+*** An amazing answer - headings bold
+I don't know what you mean by "assume that current[l]y no latex plugins or settings are applied to the document as they do not affect the output of the PDF" but taking it literally, it is not true: Org mode converts the Org mode file to a TeX file first and then processes the TeX file through some processor (e.g. pdflatex) to produce the PDF file. So even if there are no settings in the Org mode file that modify the TeX output, the default LaTeX exporter applies plenty of settings that do affect the PDF output: check the TeX file that is produced and you will see what I mean.
+
+That said, Org mode with the default H:3 setting and the default article class turns top level headings into sections, 2nd-level headings into subsections and 3rd-level headings into subsubsections. By default, LaTeX formats section headings in bold, so you get what you have described.
+
+So you can affect the output by e.g. changing the default class to one of the other standard LaTeX classes (e.g. book or report) by adding an options setting to your Org mode file:
+
+#+LATEX_CLASS: report
+
+or (as you have found out already) by changing the level at which the sectioning stops:
+
+#+OPTIONS: H:2
+
+making 3rd-level headings not into subsubsections but plain lists.
+
+All these ways are limited: there is a conventional way that Org mode exports to LaTeX and if you are happy with that (or with the simple extensions above), then you don't have to know any LaTeX. But if you want to change the format in ways that the various options cannot accommodate, you can still do so but you have to know some LaTeX.
+
+In this particular case, you can tell LaTeX to just not use a bold font for \subsubsection headings, by redefining the \subsubsection command. First, you have to find where the command is defined for the class in question. For the default article class, use the following command to find the class file:
+
+$ kpsewhich article.cls
+/usr/share/texlive/texmf-dist/tex/latex/base/article.cls
+
+Then visit the file that kpsewhich told you and find the definition of the \subsubsection macro:
+
+\newcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {1.5ex \@plus .2ex}%
+                                     {\normalfont\normalsize\bfseries}}
+
+The final macro, \bfseries, selects the bold font, so all you have to do is redefine \subsubsection without it.
+
+The best way to redefine LaTeX commands is to create your own style file. So create a file called (say) mysubsubsection.sty in the same directory as your Org mode file and add the following contents:
+
+\renewcommand\subsubsection{\@startsection{subsubsection}{3}{\z@}%
+                                     {-3.25ex\@plus -1ex \@minus -.2ex}%
+                                     {1.5ex \@plus .2ex}%
+                                     {\normalfont\normalsize}}
+
+All I did was I got rid of the \bferies macro call and I changed \newommand to \renewcommand since I am redefining an existing macro.
+
+That's it for the LaTeX part. Now you have to make sure that the style file is used when processing your Org mode document. You do that by adding the following at the top of your file:
+
+#+LATEX_HEADER: \usepackage{mysubsubsection}
+
+...
+
+Now when you export your Org mode file to PDF, it is going to be converted to a LaTeX file first (be sure to examine the .tex file produced and see that the only difference is that there is an extra \usepackage line near the top). Now when LaTeX processes the .tex file to a .pdf file, it will use the new definition of \subsubsection and produce normal (i.e. not bold) headings for them.
+
+This is a powerful way to change the appearance of your PDF document (it is not going to do anything if you export to HTML, or ODF or anything else), but you have to know a bit about LaTeX in order to use it effectively. But IMO, you have to know a bit about LaTeX in order to be able to write your documents in Org mode effectively without much LaTeX fiddling: that sounds contradictory but I am convinced it is true. I hope that the answer is useful, despite the fact that it is mostly about LaTeX, not about Org mode: but it's the connection to the latter that I am interested in, so I hope it's not off-topic for Emacs SE.
+
 ** basic shortcuts
    shift + left/right = cycle through TODO states
    Shift + up/down = cycle through priority states
@@ -1229,6 +1282,16 @@ paaiskina ka daryti jeigu agenda nesimato... https://emacs.stackexchange.com/que
 ** The clock table
    https://orgmode.org/org.html#The-clock-table
    https://www.miskatonic.org/2017/11/16/clocktableii/
+** sr-speedbar
+U - Move the entire speedbar display up one directory.  
+
+I - Display information in the minibuffer about this line. This is the same
+information shown when navigating with n and p, or moving the mouse over an
+item.  
+C - Copy the current file to some other location. 
+R - Rename the current file, possibly moving it to some other location. 
+D - Delete the current file. 
+O - Delete the current file’s object file. Use the symbols ‘#’ and ‘!’ to determine if there is an object file available. 
 * tmux
 *** tmux install
     sudo apt install tmux

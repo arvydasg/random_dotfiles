@@ -235,7 +235,7 @@ Before even doing anything, in your .emacs.d/init.el file add all this info --
 
   ;; something random from here
   ;; https://orgmode.org/list/5474B624.80002@online.de/T/
-  ;; (setq org-agenda-custom-commands
+  (setq org-agenda-custom-commands
         ;; (append
         ;;  org-agenda-custom-commands
         ;;  '(("z" "Clock Review"
