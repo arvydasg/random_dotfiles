@@ -32,49 +32,88 @@ Before even doing anything, in your .emacs.d/init.el file add all this info --
     (unless (package-installed-p 'use-package)
     (package-refresh-contents)
     (package-install 'use-package))
+*** Totally new thingy krc 2021-12-06 - veikia su dropbox
+    sudo apt install emacs
+    atsidarai .emacs.d, susikuri init.el faila
+    ikeli visa sita content 
+
+    ;; Initialize package sources
+    (require 'package)
+
+    (setq package-archives '(("melpa" . "https://melpa.org/packages/")
+    ("org" . "https://orgmode.org/elpa/")
+    ("elpa" . "https://elpa.gnu.org/packages/")))
+
+    (package-initialize)
+    (unless package-archive-contents
+    (package-refresh-contents))
+
+    CIA PADARAI package-refresh-contents
+    perkrauni emacs, ziuri ar viskas ok
+    go and check M-x list-packages
+    PAMEGINK M-x package install use- ir jeigu meta ka nors - gerai, reiskia pasiruoses kitam zingsniui
+
+    open init.el ir ikelk 
+
+    (unless (package-installed-p 'use-package)
+    (package-refresh-contents)
+    (package-install 'use-package))
+
+    reload emacs, jeigu viskas veikia- einam sekanti zingsni
+
+    susikurk dropboxe vieta kur nori kelti emacs failus.
+    susikurk ten myinit.org IR TAIP PAT myinit.el
+    
+    i myinit.org ikelk sita content
+
+    #+BEGIN_SRC emacs-lisp
+    ;; Thanks, but no thanks
+    (setq inhibit-startup-message t)
+
+
+    (menu-bar-mode -1)            ; Disable the menu bar
+    (tool-bar-mode -1)          ; Disable the toolbar
+    (tooltip-mode -1)           ; Disable tooltips
+    (set-fringe-mode 10)       ; Give some breathing room
+
+    ;; Set up the visible bell
+    (setq visible-bell t)
+    (load-theme 'tango-dark)
+    #+END_SRC
+
+    turn off emacs, turn on. 
+
+    Jeigu pasikeicia theme - tu ready to go. jeigu ne, paziurek ar myinit.el turi ta pati content kaip org.
+
+    Blogiausiu atveju nueik i temp_emacs ir copy files from there.
+
+    zodziu, viskas okei dabar. galesiu su Jokubu pasneketi apie wordpress ir core files and etc ir editint juos normaliai.
+    vaziuoju pas Julyte dabar, ji siek tiek pyksta manau kad isejau paciam smuti fruti marketingo sukuryje daryti savo reikaliuku.
+    einu pareklaminti facebook, darysim zaidima
+
 * View
 #+BEGIN_SRC emacs-lisp
-  ;; #+STARTUP: inlineimages latexpreview hideblocks entitiespretty overview
-  ;; startup & default view
-  (setq org-startup-folded t  ; t, 'overview, 'content, 'showall.
-	org-startup-indented t	   ;this is amazing, no need to care about pressing TAB (when diary f.x.) "Org Indent Mode"
-	org-startup-truncated t
-	org-startup-with-inline-images t
-	org-startup-with-latex-preview t
-	;; org-startup-options
-	;; coordinate grid overlays
-	;; org-table-overlay-coordinates t
-	;; org-table-coordinate-overlays t
-	)
+;; #+STARTUP: inlineimages latexpreview hideblocks entitiespretty overview
+;; startup & default view
+  (custom-set-variables
+   '(org-hide-leading-stars t)
+   '(org-startup-folded (quote t))	;PAGALIAU!!!
+   '(org-startup-indented t)
+   '(org-startup-indented t)	        ;this is amazing, no need to care about pressing TAB (when diary f.x.) "Org Indent Mode"
+   '(org-startup-with-inline-images t)
+   '(org-startup-with-latex-preview t)
+   '(org-confirm-babel-evaluate nil)
+   '(org-src-fontify-natively t)
+   '(org-export-with-toc nil)
+   )
 #+END_SRC
 * Interface tweaks
 #+BEGIN_SRC emacs-lisp
    (setq org-columns-default-format "%60ITEM(Task) %TODO %6Effort(Estim){:}  %6CLOCKSUM(Clock) %TAGS")
-   (unless (package-installed-p 'use-package)
-   (package-install 'use-package))
-    ;; Who I am
-    (setq user-full-name "Arvydas Gasparavicius")
-    (setq user-mail-address "arvydas.gaspa@gmail.com")
     ;; The default is to wait 1 second, which I find a bit long
     (setq echo-keystrokes 0.1)
-    (setq inhibit-startup-screen t)
-    (setq inhibit-splash-screen t)
-    ;;(tool-bar-mode -1)
-    ;; Don't let Emacs hurt your ears
-    (setq visible-bell t)
-    (fringe-mode 0) ;; no gaps from the left side
-    ;; Always use "y" for "yes"
-    (fset 'yes-or-no-p 'y-or-n-p)
     (setq tab-always-indent 'always)
-    (setq visible-bell t)
-    (setq ring-bell-function 'ignore)
-    ;; Below makes it so that the dired buffer auto-updates.
     (setq dired-auto-revert-buffer t)
-    ;; marking 80 characters in this way
-    (setq-default header-line-format
-		  (list " " (make-string 80 ?-) "|"))
-    ;; hide src blocks by default
-    (add-hook 'org-mode-hook 'org-hide-block-all)
     (setq org-log-note-clock-out t)
     ;; Clock out when moving task to a done state
     (setq org-clock-out-when-done t)
@@ -93,62 +132,17 @@ Before even doing anything, in your .emacs.d/init.el file add all this info --
   ;;(require 'org-tempo) ;; del <s krc, on thinkpad doesnt work, only with this enabled
   ;; for changing the org inline image display width
    (setq org-image-actual-width nil)
-  ;; reduce the frequency of garbage collection by making it happen on
-  ;; each 50MB of allocated data (the default is on every 0.76MB)
-  (setq gc-cons-threshold 50000000)
-  ;; warn when opening files bigger than 100MB
-  (setq large-file-warning-threshold 100000000)
-  ;; quit Emacs directly even if there are running processes
-  (setq confirm-kill-processes nil)
-  ;; nice scrolling
-  (setq scroll-margin 0
-	scroll-conservatively 100000
-	scroll-preserve-screen-position 1)
   ;; mode line settings
-  (line-number-mode t)
-  (column-number-mode t)
-  (size-indication-mode t)
-  ;; maximize the initial frame automatically
-  ;; (add-to-list 'initial-frame-alist '(fullscreen . maximized))
-  ;; Newline at end of file
-  (setq require-final-newline t)
-  ;; Wrap lines at 80 characters
-  (setq-default fill-column 80)
-  ;; smart tab behavior - indent or complete
-  (setq tab-always-indent 'complete)
+
 #+END_SRC
 * Some minor modes
 #+BEGIN_SRC emacs-lisp
-  ;; scrolling by pixel lines
-  (pixel-scroll-mode 1)
-  ;; the blinking cursor is nothing, but an annoyance
-  (blink-cursor-mode 0)
-  (global-hl-line-mode 1)
-  ;; (global-display-line-numbers-mode)
-  (tool-bar-mode 0)
-  (menu-bar-mode 0)
-  (winner-mode 1) ;; never loseqq the layout c-c left/right
-  (global-set-key [f7] 'winner-undo)
-  (global-set-key [C-f7] 'winner-redo)
-  (global-set-key [f9] 'delete-other-windows)
-  (global-set-key [C-f9] 'delete-window)
-  (toggle-scroll-bar 0)
-  (electric-pair-mode +1)  ;;match parens automatically
-  ;; Show matching parens
-  (setq show-paren-delay 0)
-  (show-paren-mode 1)
-  ;; simple message if you really want to quit
-  ;; (setq confirm-kill-emacs 'y-or-n-p)
-  ;; nicer version let me ask question myself
-  (add-hook 'kill-emacs-query-functions
-  (lambda () (y-or-n-p "Have you clocked-out mate?"))
-  'append)
   ;;  (ido-mode 1)
   ;; saving desktops not the best way
   ;; (desktop-save-mode 1)
   ;; (setq desktop-path '("~/Dropbox/doviliukas/emacs-html/"))
 #+END_SRC
-* Keybindings
+* INSTALLED 12-29 Keybindings
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-x <C-backspace>") 'aga-find-aga)
 (define-key global-map "\M-Q" 'unfill-paragraph)
@@ -182,113 +176,68 @@ Before even doing anything, in your .emacs.d/init.el file add all this info --
 #+BEGIN_SRC emacs-lisp
   (setq org-log-into-drawer "LOGBOOK")
   (setq org-directory "~/Dropbox/1.planai/")
+  (setq org-archive-location "::datetree/")
+  (setq org-agenda-restore-windows-after-quit t)
   ;; (setq org-hide-emphasis-markers t) ; Hide * and / in org tex.
 #+END_SRC
 ** Org agenda
 #+BEGIN_SRC emacs-lisp
-      ;; Ok this is quite sick, scans Dropbox and looks for org files to be used for agenda
-      ;; (load-library "find-lisp")
-      ;; (add-hook 'org-agenda-mode-hook (lambda ()
-      ;; (setq org-agenda-files
-      ;; (find-lisp-find-files "~/Dropbox" "\.org$"))
-      ;; ))
+    (setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "SIANDIEN(s)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
+    ;; M-x org-agenda-file-list. Go there and save the changes to init.el
+    (setq org-agenda-files '("~/Dropbox/1.planai/"
+                             "~/Dropbox/2.versliukas/"
+                             "~/Dropbox/3.client_websites/estetineginekologija"
+                             "~/Dropbox/3.client_websites/julija.consulting"
+                             "~/Dropbox/3.client_websites/obelsdumas"
+                             "~/Dropbox/3.client_websites/andlysport"
+                             "~/Dropbox/4.personal_websites/arvydas.dev.web"
+                             "~/Dropbox/4.personal_websites/vasara2021"
+                             "~/Dropbox/4.personal_websites/quotes(su emacs)"
+                             "~/Dropbox/4.personal_websites/django/citatos/"
+                             "~/Dropbox/7.dotfiles/"))
 
-      (setq org-todo-keywords '((sequence "TODO(t)" "NEXT(n)" "SIANDIEN(s)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
-      ;; M-x org-agenda-file-list. Go there and save the changes to init.el
-      (setq org-agenda-files '("~/Dropbox/1.planai/"
-                               "~/Dropbox/2.arvydas.dev/"
-                               "~/Dropbox/3.client_websites/estetineginekologija"
-                               "~/Dropbox/3.client_websites/julija.consulting"
-                               "~/Dropbox/3.client_websites/obelsdumas"
-                               "~/Dropbox/3.client_websites/andlysport"
-                               "~/Dropbox/4.personal_websites/arvydas.dev.web"
-                               "~/Dropbox/4.personal_websites/vasara2021"
-                               "~/Dropbox/4.personal_websites/quotes(su emacs)"
-                               "~/Dropbox/4.personal_websites/django/citatos/"
-                               "~/Dropbox/7.dotfiles/"))
-
-
-    ;; amazing link explaining archive locations
-    ;; https://orgmode.org/worg/doc.html#org-archive-location
-      ;; #+ARCHIVE: ~/Dropbox/org/backups/archive/%s_datetree::datetree/
-      (setq org-archive-location "::datetree/")
-      (setq org-agenda-restore-windows-after-quit t)
-
-
-      ;;Cool a custom command for an agenda view
-    ;; (add-to-list 'org-agenda-custom-commands
-    ;;            '("W" "Weekly review"
-    ;;              agenda ""
-    ;;              ((org-agenda-start-day "-14d")
-    ;;               (org-agenda-span 14)
-    ;;               (org-agenda-start-on-weekday 1)
-    ;;               (org-agenda-start-with-log-mode '(closed))
-    ;;               (org-agenda-skip-function '(org-agenda-skip-entry-if 'notregexp "^\\*\\* DONE ")))))
-
-      ;; (setq org-agenda-skip-scheduled-if-done t)
-      ;; Stop preparing agenda buffers on startup
-      (setq org-agenda-inhibit-startup t)
-      (global-set-key (kbd "C-c a") 'org-agenda)
-    ;; show aaaaaal the items in agenda, I wanna see all!!
-
-
-
-  ;; something random from here
-  ;; https://orgmode.org/list/5474B624.80002@online.de/T/
-  (setq org-agenda-custom-commands
-        ;; (append
-        ;;  org-agenda-custom-commands
-        ;;  '(("z" "Clock Review"
-        ;;    ((agenda ""
-        ;;             (
-        ;;              (org-agenda-overriding-header "Clocking Review")
-        ;;              (org-agenda-archives-mode t)
-        ;;              (org-agenda-span 'day)
-        ;;              (org-agenda-show-log 'clockcheck)
-        ;;              (org-agenda-clockreport-mode t)))
-        ;;     )))))
-
+    ;; Stop preparing agenda buffers on startup
+    (setq org-agenda-inhibit-startup t)
+    (global-set-key (kbd "C-c a") 'org-agenda)
 #+END_SRC
 ** Sasha agenda
-
  #+BEGIN_SRC emacs-lisp
-   (setq org-agenda-log-mode 't)
-   (setq org-agenda-custom-commands
-	 '(("a" "My custom agenda"
-	    ((org-agenda-list nil nil 1)
-	     (todo "SIANDIEN")
-	     (todo "WAITING")
-	     (todo "NEXT")
-	     (todo "TODO")))))
+         ;; https://sachachua.com/blog/2007/12/a-day-in-a-life-with-org/
+         (setq org-agenda-custom-commands
+               '(("a" "My custom agenda"
+                  ((org-agenda-list nil nil 2 nil)
+                   (todo "WAITING")
+                   (todo "NEXT")
+                   (todo "TODO")))))
+   ;; https://newbedev.com/how-to-view-the-next-days-in-org-mode-s-agenda
+   ;; these apply to everything in a agenda!!!!
+   ;; (setq org-agenda-span 7
+   ;;       org-agenda-start-on-weekday nil	;angeda starts from today not from Monday
+   ;;       org-agenda-start-day "-2d")	;two days back from today
 
-   (add-to-list 'org-agenda-custom-commands
-		'("l" "Siandienos lentele"
-		  agenda ""
-		  ((org-agenda-overriding-header "")
-		   (org-agenda-span 1)
-		   (org-agenda-use-time-grid nil)
-		   (org-agenda-view-columns-initially t)
-		   ;; do not show wardings, overdue and overscheduled
-		   (org-scheduled-past-days 0)
-		   (org-deadline-past-days 0)
-		   (org-deadline-warning-days 0)
-		   ;; skip finished entries
-		   (org-agenda-skip-deadline-if-done t)
-		   (org-agenda-skip-scheduled-if-done t))))
+   (setq org-agenda-start-on-weekday nil)	;nice, finally agenda starts from today
+   (setq org-agenda-span 'day)		;iz pz only show today in agenda
 
+      ;; agenda-day-estimated time
+      (defun my-day-page ()
+         (interactive)
+         (org-agenda-list nil nil 1)
+         (org-agenda-columns))
+
+      (define-key global-map [f10] 'my-day-page)
 
  #+END_SRC
 ** Effort
 #+BEGIN_SRC emacs-lisp
 ;; #+BEGIN: clocktable :maxlevel 0 :scope file :step day :tstart "<-1w>" :tend "<now>" :compact t
 (setq org-columns-default-format "%60ITEM(Task) %5Effort(Estim){:} %5CLOCKSUM(Clock)")
-(setq org-global-properties '(("Effort_ALL". "0:05 0:10 0:30 1:00 2:00 3:00 4:00")))
+(setq org-global-properties '(("Effort_ALL". "0:05 0:10 0:30 1:00 2:00 3:00 4:00 5:00 6:00 7:00 8:00")))
 #+END_SRC
 ** Starptup
 #+BEGIN_SRC emacs-lisp
   (setq org-startup-folded 'content)	;
 #+END_SRC
-* Themes
+* INSTALLED 12-29 Themes
 #+BEGIN_SRC emacs-lisp
   (add-to-list 'custom-theme-load-path "~/Dropbox/7.dotfiles/emacs/themes/")
 
@@ -311,7 +260,7 @@ Before even doing anything, in your .emacs.d/init.el file add all this info --
 ;; (bookmark-bmenu-list)
 ;; (switch-to-buffer "*Bookmark List*")
 #+END_SRC
-* Directories
+* INSTALLED 12-29 Directories
 #+BEGIN_SRC emacs-lisp
 ;Default
 (setq default-directory "~/Dropbox/1.planai/")
@@ -329,7 +278,7 @@ Before even doing anything, in your .emacs.d/init.el file add all this info --
 ;; sitas geriausias ir paprasciausias krc. veikia puikiai su ivy.
 (setq org-refile-targets '((org-agenda-files :maxlevel . 6)))
 #+END_SRC
-* Autosave
+* INSTALLED 12-30 Autosave
 #+BEGIN_SRC emacs-lisp
   ;; check https://github.com/bbatsov/super-save for more info
   (use-package super-save
@@ -345,7 +294,7 @@ Before even doing anything, in your .emacs.d/init.el file add all this info --
   :ensure t
   :init (telephone-line-mode 1))
 #+END_SRC
-* Avy- - navigate by searching for a letter on the screen and jumping to it
+* INSTALLED 12-29 Avy- - navigate by searching for a letter on the screen and jumping to it
 See https://github.com/abo-abo/avy for more info
   #+begin_src emacs-lisp
 	(use-package avy
@@ -359,7 +308,7 @@ See https://github.com/abo-abo/avy for more info
     ;; :config
     ;; (avy-setup-default))
   #+end_src
-* Ace windows for easy window switching
+* INSTALLED 12-29 Ace windows for easy window switching
 #+BEGIN_SRC emacs-lisp
   (use-package ace-window
     :ensure t
@@ -379,24 +328,23 @@ See https://github.com/abo-abo/avy for more info
       (?o delete-other-windows))
   "List of actions for `aw-dispatch-default'.")
 #+END_SRC
-* Company
+* INSTALLED 12-29 Company
 #+BEGIN_SRC emacs-lisp
-  ;; autocompletion thingy
-
-(use-package company
-  :ensure t
-  :config
-  (setq company-idle-delay 0.5)
-  (setq company-show-numbers t)
-  (setq company-tooltip-limit 10)
-  (setq company-minimum-prefix-length 2)
-  (setq company-tooltip-align-annotations t)
-  ;; invert the navigation direction if the the completion popup-isearch-match
-  ;; is displayed on top (happens near the bottom of windows)
-  (setq company-tooltip-flip-when-above t)
-  (global-company-mode))
+    ;; autocompletion thingy
+  (use-package company
+    :ensure t
+    :config
+    (setq company-idle-delay 0.5)
+    (setq company-show-numbers t)
+    (setq company-tooltip-limit 10)
+    (setq company-minimum-prefix-length 2)
+    (setq company-tooltip-align-annotations t)
+    ;; invert the navigation direction if the the completion popup-isearch-match
+    ;; is displayed on top (happens near the bottom of windows)
+    (setq company-tooltip-flip-when-above t)
+    (global-company-mode))
 #+END_SRC
-* Council/Ivy/Swiper
+* INSTALLED 12-29 Council/Ivy/Swiper
 Swiper gives us a really efficient incremental search with regular
 expressions and Ivy / Counsel replace a lot of ido or helms completion
 functionality pagrinde viskas is cia -
@@ -449,8 +397,8 @@ m-x customise-variable RET org-log-into-drawer - select LOGBOOK save and apply.
                                ("s" "Seima" entry
                                (file+headline "~/Dropbox/1.planai/seima.org" "Seima to-do")
 			       "* %i%?")
-                               ("a" "arvydas.dev" entry
-                               (file+headline "~/Dropbox/2.arvydas.dev/arvydas.dev.org" "arvydas.dev to-do")
+                               ("v" "Versliukas" entry
+                               (file+headline "~/Dropbox/2.versliukas/versliukas.org" "Versliukas to-do")
 			       "* %i%?")
                                ("o" "Obelsdumas" entry
                                (file+headline "~/Dropbox/3.client_websites/obelsdumas/obelsdumas.org" "Obelsdumas to-do")
@@ -469,8 +417,8 @@ m-x customise-variable RET org-log-into-drawer - select LOGBOOK save and apply.
                                "* %i%? %^{SCHEDULED}p")))
 #+END_SRC
 
-* which-key
-which-key nstates which possible key commbinations can be used after a button is input
+* INSTALLED 12-29 which-key
+which-key states which possible key commbinations can be used after a button is input
 #+BEGIN_SRC emacs-lisp
 (use-package which-key
   :ensure t
@@ -490,7 +438,6 @@ which-key nstates which possible key commbinations can be used after a button is
   (add-hook 'org-mode-hook 'org-bullets-mode)
   (setq org-bullets-bullet-list '("►" "▸" "•" "★" "◇" "◇" "◇" "◇")))
 #+END_SRC
-
 * Whitespace
 #+BEGIN_SRC emacs-lisp
   ;; (use-package whitespace
@@ -540,6 +487,9 @@ Intro video quite nice - https://www.youtube.com/watch?v=4qLD4oHOrlc
   :ensure t
   :config)
 #+END_SRC
+
+#+RESULTS:
+
 * Web-mode
 #+BEGIN_SRC emacs-lisp
   ; jumping from tag to tag - closing tags
@@ -547,15 +497,21 @@ Intro video quite nice - https://www.youtube.com/watch?v=4qLD4oHOrlc
     :ensure t
     :config
     (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+    ;; (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.tpl\\'" . web-mode))
+    (add-to-list 'auto-mode-alist '("\\.php\\'" . web-mode))
     (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
     (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
     (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
     (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
     (add-to-list 'auto-mode-alist '("\\.html?\\'" . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))) ;
+    (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode)))
+
+    ;; situos nafik off
+    ;; (setq web-mode-enable-current-column-highlight t)
+    ;; (setq web-mode-enable-current-element-highlight t) 
 #+END_SRC
-* Undo-tree
+* INSTALLED 12-29 Undo-tree
 #+BEGIN_SRC emacs-lisp
   (use-package undo-tree
   :ensure t
@@ -584,7 +540,7 @@ Intro video quite nice - https://www.youtube.com/watch?v=4qLD4oHOrlc
 * ERC (not finished)
   # https://www.reddit.com/r/emacs/comments/8ml6na/tip_how_to_make_erc_fun_to_use/
   # https://www.youtube.com/watch?v=qWHTZIYTA4s&t=1137s
-* Projectile
+* INSTALLED 12-29 Projectile
 #+BEGIN_SRC emacs-lisp
   (use-package projectile
     :ensure t
@@ -615,7 +571,7 @@ Intro video quite nice - https://www.youtube.com/watch?v=4qLD4oHOrlc
   (use-package pt
     :ensure t)
 #+END_SRC
-* Magit
+* INSTALLED 12-29 Magit
 #+BEGIN_SRC emacs-lisp
 (use-package magit
   :ensure t
@@ -631,7 +587,7 @@ Intro video quite nice - https://www.youtube.com/watch?v=4qLD4oHOrlc
   ;; turn on flychecking globally
   (add-hook 'after-init-hook #'global-flycheck-mode))
 #+END_SRC
-* Saveplace
+* INSTALLED 12-29 Saveplace
 #+BEGIN_SRC emacs-lisp
 ;; saveplace remembers your location in a file when saving files
 (use-package saveplace
@@ -659,7 +615,7 @@ Intro video quite nice - https://www.youtube.com/watch?v=4qLD4oHOrlc
     (setq sr-speedbar-auto-refresh t)
     (setq speedbar-directory-unshown-regexp "^\(\.\.*$\)\'"))
 #+END_SRC
-* Volatile-highlights
+* INSTALLED 12-29 Volatile-highlights
 #+BEGIN_SRC emacs-lisp
 ;; temporarily highlight changes from yanking, etc
 (use-package volatile-highlights
@@ -692,7 +648,7 @@ Possible options:
 #                                 (call-interactively 'ivy-switch-buffer))))
 
 # (global-set-key (kbd "C-x B") 'ivy-switch-buffer)
-
+-
 * select text inside thingies
 #+BEGIN_SRC emacs-lisp
   (defun xah-select-text-in-quote ()
@@ -714,7 +670,7 @@ Possible options:
       (set-mark $p1)))
 #+END_SRC
 
-* misc packages
+* INSTALLED 12-29 misc packages
 #+BEGIN_SRC emacs-lisp
 ; heavily inspired by Mike Zamansky
 
@@ -751,7 +707,7 @@ Possible options:
     )
 #+END_SRC
 * Python
-;; https://github.com/akraemer007/emacs_init/blob/master/myinit.org#python
+;; https://github.com/akraemer007/emacs_init/blob/master/myinit.org#python-
 * Ebooks
 https://github.com/akraemer007/emacs_init/blob/master/myinit.org#ebookspp
 * better distinguish between focused window(off)
@@ -811,9 +767,6 @@ from here - https://emacs-china.org/t/ivy-push-view/8047/4
   # https://orgmode.org/manual/Drawers.html#Drawers
   # C-c C-x p (org-set-property)
   # C-c C-x C-c - set column view Q to quit
-#+BEGIN_SRC emacs-lisp
-
-#+END_SRC
 * Random
 ** un-fill paragraph (fill - M-q, unfill - what you see below)
 #+BEGIN_SRC emacs-lisp
@@ -828,4 +781,12 @@ from here - https://emacs-china.org/t/ivy-push-view/8047/4
 
  ;; Handy key definition
     (define-key global-map "\M-Q" 'unfill-paragraph)
+#+END_SRC
+* Php-mode
+#+BEGIN_SRC emacs-lisp
+
+  ;; do package install lsp-mode before this one
+
+  (use-package php-mode
+    :ensure t)
 #+END_SRC
