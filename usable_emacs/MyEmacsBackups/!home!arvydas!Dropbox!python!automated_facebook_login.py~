@@ -1,0 +1,35 @@
+# https://selenium-python.readthedocs.io/getting-started.html
+# installed venv, chrome driver version 96.0.4664.45
+# deprecation docs - https://stackoverflow.com/questions/69875125/find-element-by-commands-are-deprecated-in-selenium
+# scroll docs - https://stackoverflow.com/questions/20986631/how-can-i-scroll-a-web-page-using-selenium-webdriver-in-python
+# pip install selenium in virtual env
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+import time
+from selenium.webdriver.common.by import By # deprecation warning removed
+
+
+driver = webdriver.Chrome("/home/arvydas/Desktop/chromedriver")
+driver.maximize_window()
+
+def facebook():
+
+    driver.get("https://www.facebook.com/")
+    time.sleep(2)
+
+    # click prekiu grazinimas
+    driver.find_element(By.XPATH, '//*[@id="u_0_j_I1"]').click()
+    driver.find_element(By.CSS_SELECTOR, "_42ft _4jy0 _9xo7 _4jy3 _4jy1 selected _51sy")
+    print("click on rukyti mesos gaminiai in 3")
+    time.sleep(3)
+
+    # SOOON m8
+
+facebook()
+print("facebook done")
+driver.close()
+
+
+    # #scroll bottom
+    # driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    # time.sleep(3)

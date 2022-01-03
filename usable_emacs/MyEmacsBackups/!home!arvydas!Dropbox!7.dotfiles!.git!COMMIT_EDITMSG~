@@ -1,0 +1,63 @@
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch master
+# Changes to be committed:
+#	deleted:    .emacs
+#	deleted:    .emacs_su_pribumbasais
+#	deleted:    README.md
+#	deleted:    bookmarks_7_6_21.html
+#	renamed:    emacs/myinit.el -> emacs + org (summer)/myinit.el
+#	renamed:    emacs/backup(before anything).org -> emacs + org (summer)/myinit.org
+#	renamed:    emacs/themes/emacs-themes/default-black-theme.el -> emacs + org (summer)/themes/emacs-themes/default-black-theme.el
+#	renamed:    emacs/themes/emacs-themes/zenburn-theme.el -> emacs + org (summer)/themes/emacs-themes/zenburn-theme.el
+#	renamed:    emacs/themes/org-html-themes/LICENSE -> emacs + org (summer)/themes/org-html-themes/LICENSE
+#	renamed:    emacs/themes/org-html-themes/README.org -> emacs + org (summer)/themes/org-html-themes/README.org
+#	renamed:    emacs/themes/org-html-themes/_config.yml -> emacs + org (summer)/themes/org-html-themes/_config.yml
+#	renamed:    emacs/themes/org-html-themes/docs/bigblow.png -> emacs + org (summer)/themes/org-html-themes/docs/bigblow.png
+#	renamed:    emacs/themes/org-html-themes/docs/readtheorg.png -> emacs + org (summer)/themes/org-html-themes/docs/readtheorg.png
+#	renamed:    emacs/themes/org-html-themes/org/theme-bigblow-local.setup -> emacs + org (summer)/themes/org-html-themes/org/theme-bigblow-local.setup
+#	renamed:    emacs/themes/org-html-themes/org/theme-bigblow.setup -> emacs + org (summer)/themes/org-html-themes/org/theme-bigblow.setup
+#	renamed:    emacs/themes/org-html-themes/org/theme-readtheorg-local.setup -> emacs + org (summer)/themes/org-html-themes/org/theme-readtheorg-local.setup
+#	renamed:    emacs/themes/org-html-themes/org/theme-readtheorg.setup -> emacs + org (summer)/themes/org-html-themes/org/theme-readtheorg.setup
+#	renamed:    emacs/themes/org-html-themes/src/bigblow_theme/css/bigblow.css -> emacs + org (summer)/themes/org-html-themes/src/bigblow_theme/css/bigblow.css
+#	renamed:    emacs/themes/org-html-themes/src/bigblow_theme/css/hideshow.css -> emacs + org (summer)/themes/org-html-themes/src/bigblow_theme/css/hideshow.css
+#	renamed:    emacs/themes/org-html-themes/src/bigblow_theme/css/htmlize.css -> emacs + org (summer)/themes/org-html-themes/src/bigblow_theme/css/htmlize.css
+#	renamed:    emacs/themes/org-html-themes/src/bigblow_theme/images/checked.png -> emacs + org (summer)/themes/org-html-themes/src/bigblow_theme/images/checked.png
+#	renamed:    emacs/themes/org-html-themes/src/bigblow_theme/images/fixme.png -> emacs + org (summer)/themes/org-html-themes/src/bigblow_theme/images/fixme.png
+#	renamed:    emacs/themes/org-html-themes/src/bigblow_theme/images/halfchecked.png -> emacs + org (summer)/themes/org-html-themes/src/bigblow_theme/images/halfchecked.png
+#	renamed:    emacs/themes/org-html-themes/src/bigblow_theme/images/info.png -> emacs + org (summer)/themes/org-html-themes/src/bigblow_theme/images/info.png
+#	renamed:    emacs/themes/org-html-themes/src/bigblow_theme/images/note.png -> emacs + org (summer)/themes/org-html-themes/src/bigblow_theme/images/note.png
+#	renamed:    emacs/themes/org-html-themes/src/bigblow_theme/images/tip.png -> emacs + org (summer)/themes/org-html-themes/src/bigblow_theme/images/tip.png
+#	renamed:    emacs/themes/org-html-themes/src/bigblow_theme/images/unchecked.png -> emacs + org (summer)/themes/org-html-themes/src/bigblow_theme/images/unchecked.png
+#	renamed:    emacs/themes/org-html-themes/src/bigblow_theme/images/warning.png -> emacs + org (summer)/themes/org-html-themes/src/bigblow_theme/images/warning.png
+#	renamed:    emacs/themes/org-html-themes/src/bigblow_theme/js/ZeroClipboard.swf -> emacs + org (summer)/themes/org-html-themes/src/bigblow_theme/js/ZeroClipboard.swf
+#	renamed:    emacs/themes/org-html-themes/src/bigblow_theme/js/bigblow.js -> emacs + org (summer)/themes/org-html-themes/src/bigblow_theme/js/bigblow.js
+#	renamed:    emacs/themes/org-html-themes/src/bigblow_theme/js/hideshow.js -> emacs + org (summer)/themes/org-html-themes/src/bigblow_theme/js/hideshow.js
+#	renamed:    emacs/themes/org-html-themes/src/bigblow_theme/js/jquery-1.11.0.min.js -> emacs + org (summer)/themes/org-html-themes/src/bigblow_theme/js/jquery-1.11.0.min.js
+#	renamed:    emacs/themes/org-html-themes/src/bigblow_theme/js/jquery-1.9.1.min.js -> emacs + org (summer)/themes/org-html-themes/src/bigblow_theme/js/jquery-1.9.1.min.js
+#	renamed:    emacs/themes/org-html-themes/src/bigblow_theme/js/jquery-ui-1.10.2.min.js -> emacs + org (summer)/themes/org-html-themes/src/bigblow_theme/js/jquery-ui-1.10.2.min.js
+#	renamed:    emacs/themes/org-html-themes/src/bigblow_theme/js/jquery.localscroll-min.js -> emacs + org (summer)/themes/org-html-themes/src/bigblow_theme/js/jquery.localscroll-min.js
+#	renamed:    emacs/themes/org-html-themes/src/bigblow_theme/js/jquery.scrollTo-1.4.3.1-min.js -> emacs + org (summer)/themes/org-html-themes/src/bigblow_theme/js/jquery.scrollTo-1.4.3.1-min.js
+#	renamed:    emacs/themes/org-html-themes/src/bigblow_theme/js/jquery.zclip.min.js -> emacs + org (summer)/themes/org-html-themes/src/bigblow_theme/js/jquery.zclip.min.js
+#	renamed:    emacs/themes/org-html-themes/src/lib/js/bootstrap-license.txt -> emacs + org (summer)/themes/org-html-themes/src/lib/js/bootstrap-license.txt
+#	renamed:    emacs/themes/org-html-themes/src/lib/js/bootstrap.min.js -> emacs + org (summer)/themes/org-html-themes/src/lib/js/bootstrap.min.js
+#	renamed:    emacs/themes/org-html-themes/src/lib/js/jquery-license.txt -> emacs + org (summer)/themes/org-html-themes/src/lib/js/jquery-license.txt
+#	renamed:    emacs/themes/org-html-themes/src/lib/js/jquery.min.js -> emacs + org (summer)/themes/org-html-themes/src/lib/js/jquery.min.js
+#	renamed:    emacs/themes/org-html-themes/src/lib/js/jquery.stickytableheaders.min.js -> emacs + org (summer)/themes/org-html-themes/src/lib/js/jquery.stickytableheaders.min.js
+#	renamed:    emacs/themes/org-html-themes/src/lib/js/stickytableheaders-license.txt -> emacs + org (summer)/themes/org-html-themes/src/lib/js/stickytableheaders-license.txt
+#	renamed:    emacs/themes/org-html-themes/src/readtheorg_theme/css/htmlize.css -> emacs + org (summer)/themes/org-html-themes/src/readtheorg_theme/css/htmlize.css
+#	renamed:    emacs/themes/org-html-themes/src/readtheorg_theme/css/readtheorg.css -> emacs + org (summer)/themes/org-html-themes/src/readtheorg_theme/css/readtheorg.css
+#	renamed:    emacs/themes/org-html-themes/src/readtheorg_theme/css/rtd-full.css -> emacs + org (summer)/themes/org-html-themes/src/readtheorg_theme/css/rtd-full.css
+#	renamed:    emacs/themes/org-html-themes/src/readtheorg_theme/js/readtheorg.js -> emacs + org (summer)/themes/org-html-themes/src/readtheorg_theme/js/readtheorg.js
+#	renamed:    emacs/themes/org-html-themes/src/readtheorg_theme/readtheorg.org -> emacs + org (summer)/themes/org-html-themes/src/readtheorg_theme/readtheorg.org
+#	deleted:    emacs/myinit.org
+#	deleted:    notes0621.txt
+#	renamed:    .tmux.conf -> tmux/.tmux.conf
+#	renamed:    tmux_resurrect_20210630T180452.txt -> tmux/tmux_resurrect_20210630T180452.txt
+#	renamed:    tmux_resurrect_20210701T192720.txt -> tmux/tmux_resurrect_20210701T192720.txt
+#	renamed:    #.vimrc# -> vim/#.vimrc#
+#	renamed:    .vimrc -> vim/.vimrc
+#	deleted:    zenburn-theme.el
+#

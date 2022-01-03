@@ -1,0 +1,19 @@
+
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+#
+# On branch main
+# Your branch is up to date with 'origin/main'.
+#
+# Changes to be committed:
+#	deleted:    1_attempt.py
+#	deleted:    2_attempt_FB.py
+#	deleted:    3_attempt_DOCS.py
+#	deleted:    4_test_DOCS.py
+#	modified:   README.md
+#	renamed:    5_attempt_dailyspoon.py -> automated_dailyspoon_quiz.py
+#	renamed:    7_attempt_FBgroups.py -> automated_facebook_login.py
+#	renamed:    6_attempt_obelsdumas.py -> automated_obelsdumas_walkthrough.py
+#	deleted:    geckodriver.log
+#	deleted:    script.sh
+#

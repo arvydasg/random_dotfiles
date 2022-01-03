@@ -1,0 +1,18 @@
+def config_read():
+    filename = "external.config"
+    contents = open(filename).read()
+    config = eval(contents)
+    username = config('username')
+    password = config('password')
+
+    print (username)
+    print (password)
+    
+    return(username,password)
+
+if __name__ == "__main__":
+    try:
+        config_read()
+    except:
+        pass
+

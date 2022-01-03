@@ -1,0 +1,33 @@
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from getpass import getpass     # built in module
+from selenium.webdriver.common.by import By # no attribute "find_element_by_id", so trying xpath
+import time
+
+Path = ('/home/arvydas/Desktop/chromedriver')
+
+s = Service(Path)
+
+driver = webdriver.Chrome(service = s)
+
+username = input("Enter in your username: ")
+password = getpass("Enter your password: ")
+
+# driver = webdriver.Chrome('/home/arvydas/Desktop/chromedriver')
+driver.get("https://www.facebook.com/")
+
+# username_textbox = driver.find_elemet_by_id("email")
+username_textbox = driver.find_elemet(By.XPATH, '//*[@id="email"]')
+username_textbox.send_keys(username)
+ 
+# username_textbox = driver.find_elemet_by_id("pass")
+username_textbox = driver.find_elemet(By.XPATH, '//*[@id="pass"]')
+password_textbox.send_keys(password)
+
+login_button = driver.find_element_by_id("u_0_k_0M")
+login_button.submit()
+time.sleep(10)
+
+
+
+

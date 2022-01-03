@@ -1,0 +1,5 @@
+#!/bin/bash
+
+python3 iv_julija.consulting.py 
+python3 iv_obelsdumas_backup.py
+python3 iv_smutifruti_backup.py 

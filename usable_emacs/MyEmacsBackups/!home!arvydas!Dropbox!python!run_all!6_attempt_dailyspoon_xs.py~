@@ -1,0 +1,44 @@
+# https://selenium-python.readthedocs.io/getting-started.html
+# installed venv, chrome driver version 96.0.4664.45
+# deprecation docs - https://stackoverflow.com/questions/69875125/find-element-by-commands-are-deprecated-in-selenium
+# scroll docs - https://stackoverflow.com/questions/20986631/how-can-i-scroll-a-web-page-using-selenium-webdriver-in-python
+# pip install selenium in virtual env
+from selenium import webdriver
+from selenium.webdriver.common.keys import Keys
+import time
+from selenium.webdriver.common.by import By # deprecation warning removed
+
+
+driver = webdriver.Chrome("/home/arvydas/Desktop/chromedriver")
+driver.maximize_window()
+
+def obelsdumas():
+
+    driver.get("https://obelsdumas.lt/")
+    print("I'm in obelsdumas.lt")
+    time.sleep(3)
+
+    #scroll bottom
+    driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(3)
+    print("Next")
+
+    # click prekiu grazinimas
+    driver.find_element(By.LINK_TEXT, "Prekių grąžinimas").click()
+    time.sleep(3)
+    print("Next")
+
+    driver.find_element(By.LINK_TEXT, "Rūkyti mėsos gaminiai").click()
+    time.sleep(3)
+    print("Next")
+    
+    driver.find_element(By.XPATH,'//*[@id="content"]/div/div/section[2]/div/div/div/div[2]/div/div/ul/li[3]/a[3]').click()
+    time.sleep(3)
+    print("Next")
+
+
+obelsdumas()
+print("obelsdumas done")
+    
+# close 
+driver.close()
