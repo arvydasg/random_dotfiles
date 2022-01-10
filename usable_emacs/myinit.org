@@ -35,7 +35,7 @@
 	    scroll-conservatively 100000
 	    scroll-preserve-screen-position 1)
 
-    ;; never loseqq the layout c-c left/right
+    ;; never lose the layout c-c left/right
     (winner-mode 1)
 
     ; display line numbers - finally...
@@ -66,22 +66,24 @@
 #+END_SRC
 * KEYBINDINGS
 #+BEGIN_SRC emacs-lisp
-;; Find my NEW init file
-(global-set-key (kbd "C-x <C-backspace>") 'aga-find-current)
-;; Easily jump to my main org file
-(defun aga-find-current nil
-  "Find the myinit.org file."
-  (interactive)
-  (find-file "~/Dropbox/7.dotfiles/usable_emacs/myinit.org")
-  (delete-other-windows))
-;; Find OLD init file
-(global-set-key (kbd "C-x <C-home>") 'aga-find-old)
-;; Easily jump to my main org file
-(defun aga-find-old nil
-  "Find the myinit.org file."
-  (interactive)
-  (find-file "~/Dropbox/7.dotfiles/emacs/myinit.org")
-  (delete-other-windows))
+  ;; Find my NEW init file
+  (global-set-key (kbd "C-x <C-backspace>") 'aga-find-current)
+  ;; Easily jump to my main org file
+  (defun aga-find-current nil
+    "Find the myinit.org file."
+    (interactive)
+    (find-file "~/Dropbox/7.dotfiles/usable_emacs/myinit.org") ;; Ubuntu
+    ;; (find-file "C:\\Users\\Arvydas\\Dropbox\\7.dotfiles\\usable_emacs\\myinit.org") ;; windows
+    (delete-other-windows))
+  ;; Find OLD init file
+  (global-set-key (kbd "C-x <C-home>") 'aga-find-old)
+  ;; Easily jump to my main org file
+  (defun aga-find-old nil
+    "Find the myinit.org file."
+    (interactive)
+    (find-file "~/Dropbox/7.dotfiles/emacs + org (summer)/myinit.org") ;; ubuntu
+    ;; (find-file "C:\\Users\\Arvydas\\Dropbox\\7.dotfiles\\emacs + org (summer)\\myinit.org") ;; windows
+    (delete-other-windows))
 #+END_SRC
 * keybind discovery
 which-key states which possible key commbinations can be used after a button is input
@@ -283,3 +285,19 @@ https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilit
   (add-hook 'css-mode-hook  'emmet-mode)) ;; enable Emmet's css abbreviation.
 #+END_SRC
 
+* Emoji
+#+BEGIN_SRC emacs-lisp
+  ;; for facebook auto posting
+  (use-package emojify
+  :ensure t 
+  :hook (after-init . global-emojify-mode))
+#+END_SRC
+* Rip Grep
+#+BEGIN_SRC emacs-lisp
+;; sudo apt install ripgrep
+;; M-x rg and search away
+;; nice video https://www.youtube.com/watch?v=4qLD4oHOrlc&ab_channel=ProtesilaosStavrou
+(use-package rg
+  :ensure t
+  :config)
+#+END_SRC

@@ -33,7 +33,7 @@
 	  scroll-conservatively 100000
 	  scroll-preserve-screen-position 1)
 
-  ;; never loseqq the layout c-c left/right
+  ;; never lose the layout c-c left/right
   (winner-mode 1)
 
   ; display line numbers - finally...
@@ -65,7 +65,8 @@
 (defun aga-find-current nil
   "Find the myinit.org file."
   (interactive)
-  (find-file "~/Dropbox/7.dotfiles/usable_emacs/myinit.org")
+  (find-file "~/Dropbox/7.dotfiles/usable_emacs/myinit.org") ;; Ubuntu
+  ;; (find-file "C:\\Users\\Arvydas\\Dropbox\\7.dotfiles\\usable_emacs\\myinit.org") ;; windows
   (delete-other-windows))
 ;; Find OLD init file
 (global-set-key (kbd "C-x <C-home>") 'aga-find-old)
@@ -73,7 +74,8 @@
 (defun aga-find-old nil
   "Find the myinit.org file."
   (interactive)
-  (find-file "~/Dropbox/7.dotfiles/emacs/myinit.org")
+  (find-file "~/Dropbox/7.dotfiles/emacs + org (summer)/myinit.org") ;; ubuntu
+  ;; (find-file "C:\\Users\\Arvydas\\Dropbox\\7.dotfiles\\emacs + org (summer)\\myinit.org") ;; windows
   (delete-other-windows))
 
 (use-package which-key
@@ -234,3 +236,15 @@ neo-force-change-root t)
 :config
 (add-hook 'sgml-mode-hook 'emmet-mode) ;; Auto-start on any markup modes
 (add-hook 'css-mode-hook  'emmet-mode)) ;; enable Emmet's css abbreviation.
+
+;; for facebook auto posting
+(use-package emojify
+:ensure t 
+:hook (after-init . global-emojify-mode))
+
+;; sudo apt install ripgrep
+;; M-x rg and search away
+;; nice video https://www.youtube.com/watch?v=4qLD4oHOrlc&ab_channel=ProtesilaosStavrou
+(use-package rg
+  :ensure t
+  :config)
