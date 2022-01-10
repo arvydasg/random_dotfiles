@@ -297,6 +297,7 @@ https://www.reddit.com/r/emacs/comments/910pga/tip_how_to_use_ivy_and_its_utilit
 ;; sudo apt install ripgrep
 ;; M-x rg and search away
 ;; nice video https://www.youtube.com/watch?v=4qLD4oHOrlc&ab_channel=ProtesilaosStavrou
+;; added ripgrep
 (use-package rg
   :ensure t
   :config)
