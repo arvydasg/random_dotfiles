@@ -1,4 +1,0 @@
-#!/bin/bash
-
-python3 6_attempt_dailyspoon_xs.py 
-python3 5_attempt_dailyspoon.py
